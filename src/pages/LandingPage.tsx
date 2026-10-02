@@ -103,13 +103,13 @@ function NavMenu({ label, items, onGo }) {
         {label}<ChevronDown size={15} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2">
-          <div className="w-80 rounded-2xl p-2 border"
+        <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3 lh-mega">
+          <div className="w-[420px] rounded-[28px] p-3 border"
             style={{ background: 'linear-gradient(180deg,#2a2340,#1e1930)', borderColor: 'rgba(124,92,230,.30)', boxShadow: '0 26px 60px -18px rgba(0,0,0,.55)' }}>
             {items.map((it) => {
               const Ic = it.icon;
               return (
-                <button key={it.t} onClick={onGo(it.to)} className="flex w-full items-start gap-3 rounded-xl p-3 text-left ring-1 ring-transparent transition-all hover:bg-white/[0.055] hover:ring-white/[0.07] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.11)]">
+                <button key={it.t} onClick={onGo(it.to)} className="lh-mega-item flex w-full items-start gap-3 rounded-2xl p-3.5 text-left ring-1 ring-transparent transition-all hover:bg-white/[0.065] hover:ring-white/[0.09] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.11)]">
                   <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-brand-300"><Ic size={16} /></span>
                   <span>
                     <span className="block text-sm font-semibold text-white">{it.t}</span>
@@ -714,7 +714,7 @@ export function LandingPage() {
         {/* fixed frosted-glass pill nav — stays pinned to the top on scroll */}
         <div className="fixed inset-x-0 top-0 z-40 px-4 pt-3">
           <header
-            className="mx-auto max-w-6xl rounded-2xl border border-white/60 bg-white/70 backdrop-blur-md lg:backdrop-blur-xl backdrop-saturate-150"
+            className="lh-nav-shell mx-auto max-w-6xl rounded-[22px] border backdrop-blur-md lg:backdrop-blur-xl backdrop-saturate-150"
             style={{ boxShadow: '0 1px 0 rgba(255,255,255,.7) inset, 0 10px 30px -10px rgba(16,24,40,.14), 0 24px 60px -24px rgba(124,92,230,.24)' }}>
             <div className="px-5 h-14 flex items-center justify-between">
               <Logo size={25} />
@@ -793,7 +793,7 @@ export function LandingPage() {
           <div className="grid items-center gap-10 lg:grid-cols-2">
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-white/70 px-3 py-1 text-xs font-semibold text-brand-700 backdrop-blur"><ShieldCheck size={12} />Pre-deployment intelligence platform</span>
-              <h1 className="mt-6 text-4xl sm:text-6xl font-bold tracking-tight leading-[1.06]">
+              <h1 className="lh-editorial lh-reveal mt-6 text-5xl sm:text-6xl lg:text-[4.45rem] font-bold tracking-tight leading-[.98]">
                 Validate every change you make<br />
                 <span className="bg-gradient-to-r from-brand-600 via-brand-400 to-brand-300 bg-clip-text text-transparent">before it reaches production.</span>
               </h1>
@@ -801,7 +801,7 @@ export function LandingPage() {
               {/* Three-step path. Uses a plain straight connecting line rather
                   than a curved/dashed one, so this is our own visual
                   treatment rather than a copy of the reference layout. */}
-              <div className="relative mt-9">
+              <div className="relative mt-10 lh-reveal" style={{ animationDelay: '.08s' }}>
                 <div className="absolute left-5 top-3 bottom-3 w-px bg-white/12" aria-hidden="true" />
                 <div className="space-y-6">
                   {[
@@ -824,7 +824,7 @@ export function LandingPage() {
                 Every deploy, <span className="bg-gradient-to-r from-brand-600 via-brand-400 to-brand-300 bg-clip-text text-transparent">backed by evidence.</span>
               </p>
 
-              <div className="mt-8 flex max-w-md flex-col sm:flex-row items-stretch gap-2">
+              <div className="mt-8 flex max-w-md flex-col sm:flex-row items-stretch gap-2 lh-reveal" style={{ animationDelay: '.16s' }}>
                 <input
                   value={email} onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') startTrial(); }}
@@ -888,7 +888,7 @@ export function LandingPage() {
           </div>
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Card 1 — terminal */}
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
+            <div className="lh-premium-card overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.02]">
               <div className="p-5 pb-0">
                 <div className="overflow-hidden rounded-xl border border-white/10 bg-[#141019]">
                   <div className="flex items-center gap-1.5 border-b border-white/10 px-3 py-2">
@@ -911,7 +911,7 @@ export function LandingPage() {
             </div>
 
             {/* Card 2 — release decision */}
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
+            <div className="lh-premium-card overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.02]">
               <div className="p-5 pb-0">
                 <div className="overflow-hidden rounded-xl border border-white/10 bg-[#141019]">
                   <div className="flex items-center gap-1.5 border-b border-white/10 px-3 py-2">
@@ -938,7 +938,7 @@ export function LandingPage() {
             </div>
 
             {/* Card 3 — fix */}
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
+            <div className="lh-premium-card overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.02]">
               <div className="p-5 pb-0">
                 <div className="overflow-hidden rounded-xl border border-white/10 bg-[#141019]">
                   <div className="flex items-center gap-1.5 border-b border-white/10 px-3 py-2">
@@ -1025,11 +1025,11 @@ export function LandingPage() {
 
         {/* CTA banner */}
         <section id="security" className="mx-auto max-w-6xl px-5 py-24">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 rounded-3xl border border-brand-100 bg-white/70 px-8 py-10 backdrop-blur"
+          <div className="lh-demo-panel flex flex-col sm:flex-row items-center justify-between gap-8 rounded-[34px] border border-white/10 px-8 sm:px-12 py-12 sm:py-14"
             style={{ boxShadow: '0 20px 50px -24px rgba(124,92,230,.35)' }}>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Ready to ship with confidence?</h2>
-              <p className="mt-2 text-navy-500">Create an account, connect a repository, and get your first release decision in minutes.</p>
+              <span className="lh-kicker text-[11px] font-bold text-brand-300">Request a demo</span><h2 className="lh-editorial mt-3 text-3xl sm:text-5xl font-bold text-white">See what LytHouse catches before production does.</h2>
+              <p className="mt-3 max-w-2xl text-white/60">Bring one release, one repository, or one deployment concern. We’ll show you how LytHouse turns it into a clear, evidence-backed decision.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Dark onClick={go('/signup')} className="px-6 py-3">Start free<ArrowRight size={15} /></Dark>
