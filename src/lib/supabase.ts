@@ -3,8 +3,7 @@ import{createClient}from'@supabase/supabase-js';
 
 const upstreamUrl=import.meta.env.VITE_SUPABASE_URL as string;
 export const anonKey=import.meta.env.VITE_SUPABASE_ANON_KEY as string;
-const isLocal=typeof window!=='undefined'&&['localhost','127.0.0.1'].includes(window.location.hostname);
-const url=isLocal?upstreamUrl:`${window.location.origin}/supabase`;
+const url=typeof window!=='undefined'?`${window.location.origin}/supabase`:upstreamUrl;
 export const edgeFunctionUrl=url+'/functions/v1';
 export const supabase=createClient(url,anonKey,{auth:{persistSession:true}});
 

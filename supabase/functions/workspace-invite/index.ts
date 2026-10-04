@@ -1,11 +1,10 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const appOrigin = Deno.env.get("APP_ORIGIN") || "https://lythouse.ai";
 const corsHeaders = {
-  "Access-Control-Allow-Origin": appOrigin,
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
-  "Vary": "Origin",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey, apikey",
+  "Access-Control-Max-Age": "86400",
 };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 const assignableRoles = new Set(["admin", "developer", "approver", "viewer"]);
