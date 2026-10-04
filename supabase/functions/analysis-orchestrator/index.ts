@@ -6,6 +6,7 @@ const cors = {
     "Content-Type, Authorization, X-Client-Info, Apikey, apikey",
   "Access-Control-Max-Age": "86400",
 };
+
 const DOMAINS = [
   "Code",
   "Infrastructure",
@@ -15,6 +16,7 @@ const DOMAINS = [
   "Dependencies",
   "Vendor Intelligence",
 ];
+
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
