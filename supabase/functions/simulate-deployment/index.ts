@@ -1,5 +1,5 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
-const cors={"Access-Control-Allow-Origin":Deno.env.get("APP_ORIGIN")||"https://lythouse.ai","Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type, Authorization, Apikey"};
+const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type, Authorization, Apikey, apikey","Access-Control-Max-Age":"86400"};
 const json=(b:unknown,s=200)=>new Response(JSON.stringify(b),{status:s,headers:{...cors,"Content-Type":"application/json"}});
 const rules=[[/\.github\/workflows\//i,'ci',14],[/(^|\/)(terraform|infra|infrastructure)\/|\.tf(vars)?$/i,'infrastructure',18],[/(^|\/)(k8s|kubernetes|helm)\/|Dockerfile|docker-compose/i,'infrastructure',16],[/package(-lock)?\.json$|requirements\.txt$|go\.(mod|sum)$/i,'dependency',12],[/(^|\/)supabase\/migrations\/|(^|\/)migrations\//i,'database',20],[/(^|\/)(auth|security|permissions|iam|rbac)(\/|\.|-)/i,'security',20],[/\.env|vercel\.json|netlify\.toml|config\./i,'configuration',16],[/(^|\/)(api|server|functions|routes)\//i,'application',10]] as const;
 function classify(path:string){const m=rules.filter(r=>r[0].test(path));const strongest=m.sort((a,b)=>b[2]-a[2])[0];return{path,kind:strongest?.[1]||'application',weight:strongest?.[2]||4};}

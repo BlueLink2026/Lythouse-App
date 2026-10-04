@@ -1,8 +1,7 @@
 import Anthropic from "npm:@anthropic-ai/sdk@0.27.3";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import jwt from 'npm:jsonwebtoken@9.0.2';
-const origin=Deno.env.get('APP_ORIGIN')||'https://sandbox-ai-app-eight.vercel.app';
-const cors={'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Authorization, X-Client-Info, Apikey'};
+const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'POST, OPTIONS','Access-Control-Allow-Headers':'Content-Type, Authorization, X-Client-Info, Apikey, apikey','Access-Control-Max-Age':'86400'};
 const json=(b:unknown,s=200)=>new Response(JSON.stringify(b),{status:s,headers:{...cors,'Content-Type':'application/json'}});
 const SYSTEM=`You are LytHouse Intelligence, a pre-deployment engineering investigator. Your job is not to decorate scanner output. Your job is to reason across VERIFIED repository evidence, dependency/vendor intelligence and deterministic findings to expose consequential things an engineering team may miss before production.
 

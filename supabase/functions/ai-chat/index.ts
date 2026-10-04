@@ -1,8 +1,7 @@
 import Anthropic from "npm:@anthropic-ai/sdk@0.27.3";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const allowedOrigin=Deno.env.get("APP_ORIGIN")||"https://sandbox-ai-app-eight.vercel.app";
-const corsHeaders={"Access-Control-Allow-Origin":allowedOrigin,"Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type, Authorization, X-Client-Info, Apikey","Vary":"Origin"};
+const corsHeaders={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type, Authorization, X-Client-Info, Apikey, apikey","Access-Control-Max-Age":"86400"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...corsHeaders,"Content-Type":"application/json"}});
 const SYSTEM=`You are LytHouse AI, an enterprise release-readiness assistant. Answer only from verified workspace evidence supplied by the server. Never invent findings, files, scores, approvals, deployments, infrastructure, or fixes. Explain the release decision in plain language, prioritize critical/high blockers, cite file paths and line numbers when present, and give concrete recommended fixes from the evidence. Deterministic LytHouse checks own the release verdict; you explain but never override it. If evidence is missing, say exactly what is missing.`;
 

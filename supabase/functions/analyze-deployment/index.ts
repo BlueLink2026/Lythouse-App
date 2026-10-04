@@ -1,10 +1,10 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 
-const origin = Deno.env.get('APP_ORIGIN') || 'https://sandbox-ai-app-eight.vercel.app';
 const corsHeaders = {
-  'Access-Control-Allow-Origin': origin,
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey, apikey',
+  'Access-Control-Max-Age': '86400',
 };
 
 /**
