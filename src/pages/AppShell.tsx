@@ -5,13 +5,14 @@ import {
   FolderGit2, Layers, LogOut, Menu, Pin, Plus,
   Server, Sparkles, X, Sun, Moon, Settings as SettingsIcon, Users, CreditCard,
   Gauge, ShieldCheck, FileText, ClipboardCheck, Zap, Activity, FileWarning,
-  Workflow, Rocket, Boxes, BookOpen, ScrollText, Plug, BarChart3, Command
+  Workflow, Rocket, Boxes, BookOpen, ScrollText, Plug, BarChart3, Command, SlidersHorizontal
 } from 'lucide-react'
 import { supabase, type Workspace, type Organization, type WorkspacePlan, type PlanId, PLANS } from '../lib/supabase'
 import { usePins, removePin, pinKey, type PinType } from '../lib/pins'
 import {
-  NAV_ACCOUNT, NAV_PRIMARY, PAGE_TITLES, type NavItem
+  NAV_ACCOUNT, NAV_PRIMARY, GLOBAL_FACET_QUICK_FILTERS, PAGE_TITLES, type NavItem, type NavFacet
 } from '../lib/nav'
+
 import { useRouter, Link } from '../lib/router'
 import { useAuth } from '../lib/auth'
 import { CommandPalette } from './CommandPalette'
@@ -512,12 +513,207 @@ const CSS = `
   color: var(--lh-text3);
 }
 
+/* Quick Facet Triage Strip */
+.lh-quick-facets-bar {
+  padding: 6px 12px 10px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--lh-sidebar-border);
+}
+
+.lh-quick-facets-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lh-text3);
+  margin-bottom: 7px;
+}
+
+.lh-quick-facets-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.lh-qchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.5px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: var(--lh-surface2);
+  color: var(--lh-text2);
+  font-size: 11px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.12s ease;
+  border: 1px solid transparent;
+}
+
+.lh-qchip:hover {
+  background: var(--lh-surface-hover);
+  color: var(--lh-text);
+  border-color: var(--lh-border2);
+}
+
+.lh-qchip.active {
+  background: var(--lh-accent-weak);
+  color: var(--lh-accent);
+  font-weight: 600;
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.lh-qchip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Faceted Sub-Navigation */
+.lh-item-facet-group {
+  margin-bottom: 2px;
+}
+
+.lh-item-row-wrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.lh-item-row-wrap .lh-item {
+  margin-bottom: 0;
+  padding-right: 28px;
+}
+
+.lh-item-row-wrap:hover .lh-facet-toggle {
+  opacity: 1;
+}
+
+.lh-facet-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--lh-text3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.15s ease;
+  z-index: 2;
+}
+
+.lh-facet-toggle:hover {
+  background: var(--lh-surface-hover);
+  color: var(--lh-text);
+  opacity: 1;
+}
+
+.lh-facet-toggle svg {
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.lh-facet-toggle.open svg {
+  transform: rotate(90deg);
+  color: var(--lh-accent);
+}
+
+.lh-facet-sublist {
+  margin: 3px 0 6px 16px;
+  padding-left: 10px;
+  border-left: 1.5px solid var(--lh-sidebar-border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lh-facet-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 12px;
+  color: var(--lh-text2);
+  text-decoration: none;
+  transition: all 0.12s ease;
+  position: relative;
+}
+
+.lh-facet-link:hover {
+  background: var(--lh-surface2);
+  color: var(--lh-text);
+}
+
+.lh-facet-link.active {
+  background: var(--lh-accent-weak);
+  color: var(--lh-accent);
+  font-weight: 600;
+}
+
+.lh-facet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.lh-facet-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lh-facet-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5.5px;
+  border-radius: 5px;
+  letter-spacing: 0.02em;
+}
+
+.lh-facet-badge.danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.lh-facet-badge.warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+}
+
+.lh-facet-badge.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.lh-facet-badge.info {
+  background: rgba(56, 189, 248, 0.15);
+  color: #0284c7;
+}
+
+.lh-facet-badge.default {
+  background: var(--lh-surface2);
+  color: var(--lh-text3);
+}
+
 /* Sections & Accordions */
 .lh-sec-hdr {
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
+
   color: var(--lh-text3);
   padding: 12px 10px 6px;
   display: flex;
@@ -990,8 +1186,9 @@ function isPathActive(path: string, to: string) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { path, navigate } = useRouter()
+  const { path, search, fullPath, navigate } = useRouter()
   const { user, profile, signOut } = useAuth()
+
   const [activeWs, setActiveWs] = useState<Workspace | null>(null)
   const [wsList, setWsList] = useState<Workspace[]>([])
   const [orgList, setOrgList] = useState<Organization[]>([])
@@ -1141,20 +1338,80 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const NavItemRow = ({ item, size = 16 }: { item: NavItem; size?: number }) => {
     const active = isPathActive(path, item.to)
+    const hasFacets = Boolean(item.facets && item.facets.length > 0)
+    const [facetOpen, setFacetOpen] = useState(() => active)
+
+    useEffect(() => {
+      if (active && hasFacets) {
+        setFacetOpen(true)
+      }
+    }, [active, hasFacets])
+
     const Icon = item.icon
+    const isRootActive = active && (!hasFacets || fullPath === item.to || (!search && path === item.to))
+
     return (
-      <Link
-        to={item.to}
-        onClick={go}
-        className={`lh-item ${active ? 'active' : ''}`}
-        title={item.description || item.label}
-      >
-        <Icon size={size} strokeWidth={active ? 2.2 : 1.8} />
-        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {item.label}
-        </span>
-        {item.badge && <span className="lh-item-badge">{item.badge}</span>}
-      </Link>
+      <div className="lh-item-facet-group">
+        <div className={`lh-item-row-wrap ${active ? 'is-active-parent' : ''}`}>
+          <Link
+            to={item.to}
+            onClick={go}
+            className={`lh-item ${isRootActive ? 'active' : ''}`}
+            title={item.description || item.label}
+          >
+            <Icon size={size} strokeWidth={active ? 2.2 : 1.8} />
+            <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {item.label}
+            </span>
+            {item.badge && <span className="lh-item-badge">{item.badge}</span>}
+          </Link>
+          {hasFacets && (
+            <button
+              type="button"
+              className={`lh-facet-toggle ${facetOpen ? 'open' : ''}`}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setFacetOpen(v => !v)
+              }}
+              title={facetOpen ? 'Collapse facets' : 'Expand faceted filters'}
+              aria-label={`Toggle facets for ${item.label}`}
+            >
+              <ChevronRight size={13} />
+            </button>
+          )}
+        </div>
+
+        {hasFacets && facetOpen && (
+          <div className="lh-facet-sublist">
+            {item.facets!.map(facet => {
+              const isFacetActive =
+                fullPath === facet.to ||
+                (facet.filterParam &&
+                  search.includes(`${facet.filterParam.key}=${facet.filterParam.value}`))
+              return (
+                <Link
+                  key={facet.id}
+                  to={facet.to}
+                  onClick={go}
+                  className={`lh-facet-link ${isFacetActive ? 'active' : ''}`}
+                >
+                  <span
+                    className="lh-facet-dot"
+                    style={{ backgroundColor: facet.dotColor || 'var(--lh-accent)' }}
+                  />
+                  <span className="lh-facet-text">{facet.label}</span>
+                  {facet.badge && (
+                    <span className={`lh-facet-badge ${facet.badgeVariant || 'default'}`}>
+                      {facet.badge}
+                    </span>
+                  )}
+                </Link>
+              )
+            })}
+          </div>
+        )}
+      </div>
     )
   }
 
@@ -1252,9 +1509,34 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Navigation Links Area */}
       <nav className="lh-nav">
         <div className="lh-nav-content">
+          {/* Spacelift-style Quick Facet Triage Strip */}
+          <div className="lh-quick-facets-bar">
+            <div className="lh-quick-facets-title">
+              <SlidersHorizontal size={11} />
+              <span>Quick Facets</span>
+            </div>
+            <div className="lh-quick-facets-list">
+              {GLOBAL_FACET_QUICK_FILTERS.map(qf => {
+                const isQfActive = fullPath === qf.to || (qf.to.includes('?') && search.includes(qf.to.split('?')[1]))
+                return (
+                  <Link
+                    key={qf.id}
+                    to={qf.to}
+                    onClick={go}
+                    className={`lh-qchip ${isQfActive ? 'active' : ''}`}
+                  >
+                    <span className="lh-qchip-dot" style={{ backgroundColor: qf.dotColor }} />
+                    <span>{qf.label}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+
           {/* Primary Everyday Actions */}
           <div className="lh-sec-hdr">Core Platform</div>
           {NAV_PRIMARY.map(i => <NavItemRow key={i.to} item={i} size={16} />)}
+
 
           {/* Pinned Items Section */}
           {pins.length > 0 && (
