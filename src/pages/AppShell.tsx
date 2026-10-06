@@ -573,7 +573,7 @@ const CSS = `
   flex-shrink: 0;
 }
 
-/* Faceted Sub-Navigation */
+/* Faceted Sub-Navigation with smooth animated accordion expansion */
 .lh-item-facet-group {
   margin-bottom: 2px;
 }
@@ -607,8 +607,8 @@ const CSS = `
   display: grid;
   place-items: center;
   cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.15s ease;
+  opacity: 0.6;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 2;
 }
 
@@ -619,7 +619,7 @@ const CSS = `
 }
 
 .lh-facet-toggle svg {
-  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lh-facet-toggle.open svg {
@@ -627,14 +627,29 @@ const CSS = `
   color: var(--lh-accent);
 }
 
+.lh-facet-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  opacity: 0;
+}
+
+.lh-facet-collapse.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
 .lh-facet-sublist {
-  margin: 3px 0 6px 16px;
+  overflow: hidden;
+  min-height: 0;
+  margin: 3px 0 5px 16px;
   padding-left: 10px;
   border-left: 1.5px solid var(--lh-sidebar-border);
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
+
 
 .lh-facet-link {
   display: flex;
@@ -1355,7 +1370,12 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className={`lh-item-row-wrap ${active ? 'is-active-parent' : ''}`}>
           <Link
             to={item.to}
-            onClick={go}
+            onClick={() => {
+              if (hasFacets && !facetOpen) {
+                setFacetOpen(true)
+              }
+              go()
+            }}
             className={`lh-item ${isRootActive ? 'active' : ''}`}
             title={item.description || item.label}
           >
@@ -1374,7 +1394,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 e.stopPropagation()
                 setFacetOpen(v => !v)
               }}
-              title={facetOpen ? 'Collapse facets' : 'Expand faceted filters'}
+              title={facetOpen ? 'Collapse sub-filters' : 'Expand sub-filters'}
               aria-label={`Toggle facets for ${item.label}`}
             >
               <ChevronRight size={13} />
@@ -1382,38 +1402,41 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
         </div>
 
-        {hasFacets && facetOpen && (
-          <div className="lh-facet-sublist">
-            {item.facets!.map(facet => {
-              const isFacetActive =
-                fullPath === facet.to ||
-                (facet.filterParam &&
-                  search.includes(`${facet.filterParam.key}=${facet.filterParam.value}`))
-              return (
-                <Link
-                  key={facet.id}
-                  to={facet.to}
-                  onClick={go}
-                  className={`lh-facet-link ${isFacetActive ? 'active' : ''}`}
-                >
-                  <span
-                    className="lh-facet-dot"
-                    style={{ backgroundColor: facet.dotColor || 'var(--lh-accent)' }}
-                  />
-                  <span className="lh-facet-text">{facet.label}</span>
-                  {facet.badge && (
-                    <span className={`lh-facet-badge ${facet.badgeVariant || 'default'}`}>
-                      {facet.badge}
-                    </span>
-                  )}
-                </Link>
-              )
-            })}
+        {hasFacets && (
+          <div className={`lh-facet-collapse ${facetOpen ? 'open' : ''}`}>
+            <div className="lh-facet-sublist">
+              {item.facets!.map(facet => {
+                const isFacetActive =
+                  fullPath === facet.to ||
+                  (facet.filterParam &&
+                    search.includes(`${facet.filterParam.key}=${facet.filterParam.value}`))
+                return (
+                  <Link
+                    key={facet.id}
+                    to={facet.to}
+                    onClick={go}
+                    className={`lh-facet-link ${isFacetActive ? 'active' : ''}`}
+                  >
+                    <span
+                      className="lh-facet-dot"
+                      style={{ backgroundColor: facet.dotColor || 'var(--lh-accent)' }}
+                    />
+                    <span className="lh-facet-text">{facet.label}</span>
+                    {facet.badge && (
+                      <span className={`lh-facet-badge ${facet.badgeVariant || 'default'}`}>
+                        {facet.badge}
+                      </span>
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
           </div>
         )}
       </div>
     )
   }
+
 
   const isProjectWorkspace = path.startsWith('/projects/') && path.split('/').filter(Boolean).length >= 2
 
