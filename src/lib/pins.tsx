@@ -9,7 +9,7 @@
 import { useEffect, useState } from 'react'
 import { Pin } from 'lucide-react'
 
-export type PinType = 'workspace' | 'project' | 'finding' | 'stack' | 'environment'
+export type PinType = 'workspace' | 'project' | 'finding' | 'stack' | 'environment' | 'nav'
 export interface PinItem {
   type: PinType
   id: string

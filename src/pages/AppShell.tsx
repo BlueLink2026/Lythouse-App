@@ -9,7 +9,7 @@ import {
   Compass, Code2, Bell, LifeBuoy, Star, Bot, Search, ExternalLink, HelpCircle
 } from 'lucide-react'
 import { supabase, type Workspace, type Organization, type WorkspacePlan, type PlanId, PLANS } from '../lib/supabase'
-import { usePins, removePin, pinKey, type PinType } from '../lib/pins'
+import { usePins, removePin, togglePin, pinKey, type PinType } from '../lib/pins'
 import {
   NAV_ACCOUNT, NAV_PRIMARY, SPACELIFT_SECTIONS, GLOBAL_FACET_QUICK_FILTERS, PAGE_TITLES,
   type NavItem, type NavFacet, type SpaceliftSection
@@ -22,12 +22,13 @@ import { AskAiPanel } from './AskAiPanel'
 export const PlanContext = createContext<PlanId>('free')
 export function usePlanId(): PlanId { return useContext(PlanContext) }
 
-const PIN_ICONS: Record<PinType, any> = {
+const PIN_ICONS: Record<PinType | string, any> = {
   workspace: Building2,
   project: FolderGit2,
   finding: Bug,
   stack: Layers,
   environment: Server,
+  nav: Compass,
 }
 
 const CSS = `
@@ -592,6 +593,49 @@ const CSS = `
   color: var(--lh-accent);
 }
 
+/* Pin icon on hover for every sidebar subtab */
+.lh-nav-pin-btn {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 4px;
+  border: 0;
+  background: transparent;
+  color: var(--lh-text3);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.92);
+  transition: opacity 120ms ease, transform 120ms ease, background-color 120ms ease, color 120ms ease;
+  flex-shrink: 0;
+}
+
+.lh-item-row-wrap:hover .lh-nav-pin-btn,
+.lh-facet-link-wrap:hover .lh-nav-pin-btn,
+.lh-nav-pin-btn.pinned {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.lh-nav-pin-btn:hover {
+  background: var(--lh-sidebar-hover);
+  color: var(--lh-accent);
+}
+
+.lh-nav-pin-btn.pinned {
+  color: var(--lh-accent);
+}
+
+.lh-nav-pin-btn.pinned .lh-nav-pin-icon {
+  fill: currentColor;
+  transform: rotate(-32deg);
+}
+
+.lh-nav-pin-icon {
+  transition: transform 140ms ease;
+}
+
 /* Faceted Subfilters - 26px Height, 40px Left Indent */
 .lh-facet-collapse {
   display: grid;
@@ -611,6 +655,13 @@ const CSS = `
   gap: 1px;
 }
 
+.lh-facet-link-wrap {
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  position: relative;
+}
+
 .lh-facet-link {
   display: flex;
   align-items: center;
@@ -622,6 +673,8 @@ const CSS = `
   color: var(--lh-text2);
   text-decoration: none;
   font-size: 11.5px;
+  flex: 1;
+  min-width: 0;
   transition: background-color 120ms ease, color 120ms ease;
 }
 
@@ -1279,7 +1332,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     window.location.assign('/organizations')
   }
 
-  const NavItemRow = ({ item, size = 15 }: { item: NavItem; size?: number }) => {
+  const NavItemRow = ({ item, size = 13.5 }: { item: NavItem; size?: number }) => {
     const active = isPathActive(path, item.to)
     const hasFacets = Boolean(item.facets && item.facets.length > 0)
     const [facetOpen, setFacetOpen] = useState(() => active)
@@ -1292,6 +1345,18 @@ export function AppShell({ children }: { children: ReactNode }) {
 
     const Icon = item.icon
     const isRootActive = active && (!hasFacets || fullPath === item.to || (!search && path === item.to))
+    const isItemPinned = pins.some(p => p.to === item.to || p.id === item.to)
+
+    const handlePinClick = (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      togglePin({
+        type: (item.to.includes('project') ? 'project' : item.to.includes('finding') ? 'finding' : item.to.includes('stack') ? 'stack' : 'nav') as PinType,
+        id: item.to,
+        label: item.label,
+        to: item.to,
+      })
+    }
 
     return (
       <div className="lh-item-facet-group">
@@ -1313,6 +1378,18 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
             {item.badge && <span className="lh-item-badge">{item.badge}</span>}
           </Link>
+
+          {/* Hover Pin Button */}
+          <button
+            type="button"
+            className={`lh-nav-pin-btn ${isItemPinned ? 'pinned' : ''}`}
+            onClick={handlePinClick}
+            title={isItemPinned ? `Unpin ${item.label}` : `Pin ${item.label} to top`}
+            aria-label={isItemPinned ? `Unpin ${item.label}` : `Pin ${item.label}`}
+          >
+            <Pin size={11} className="lh-nav-pin-icon" />
+          </button>
+
           {hasFacets && (
             <button
               type="button"
@@ -1338,22 +1415,46 @@ export function AppShell({ children }: { children: ReactNode }) {
                   fullPath === facet.to ||
                   (facet.filterParam &&
                     search.includes(`${facet.filterParam.key}=${facet.filterParam.value}`))
+                const isFacetPinned = pins.some(p => p.to === facet.to || p.id === facet.to)
+                const handleFacetPinClick = (e: React.MouseEvent) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  togglePin({
+                    type: 'finding' as PinType,
+                    id: facet.to,
+                    label: `${item.label}: ${facet.label}`,
+                    to: facet.to,
+                  })
+                }
+
                 return (
-                  <Link
-                    key={facet.id}
-                    to={facet.to}
-                    onClick={go}
-                    className={`lh-facet-link ${isFacetActive ? 'active' : ''}`}
-                  >
-                    <span
-                      className="lh-facet-dot"
-                      style={{ backgroundColor: facet.dotColor || 'var(--lh-accent)' }}
-                    />
-                    <span className="lh-facet-text">{facet.label}</span>
-                    {facet.badge && (
-                      <span className="lh-facet-count">{facet.badge}</span>
-                    )}
-                  </Link>
+                  <div key={facet.id} className="lh-facet-link-wrap">
+                    <Link
+                      to={facet.to}
+                      onClick={go}
+                      className={`lh-facet-link ${isFacetActive ? 'active' : ''}`}
+                    >
+                      <span
+                        className="lh-facet-dot"
+                        style={{ backgroundColor: facet.dotColor || 'var(--lh-accent)' }}
+                      />
+                      <span className="lh-facet-text" style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {facet.label}
+                      </span>
+                      {facet.badge && (
+                        <span className="lh-facet-count">{facet.badge}</span>
+                      )}
+                    </Link>
+                    <button
+                      type="button"
+                      className={`lh-nav-pin-btn ${isFacetPinned ? 'pinned' : ''}`}
+                      onClick={handleFacetPinClick}
+                      title={isFacetPinned ? `Unpin ${facet.label}` : `Pin ${facet.label}`}
+                      aria-label={isFacetPinned ? `Unpin ${facet.label}` : `Pin ${facet.label}`}
+                    >
+                      <Pin size={10} className="lh-nav-pin-icon" />
+                    </button>
+                  </div>
                 )
               })}
             </div>
