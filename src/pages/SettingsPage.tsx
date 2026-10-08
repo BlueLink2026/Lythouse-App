@@ -3,7 +3,8 @@ import{useEffect,useState}from'react';
 import{supabase,edgeFunctionUrl,anonKey}from'../lib/supabase';
 import{useAuth}from'../lib/auth';
 import{PageHeader,Spinner,toast}from'../lib/ui';
-import{User,Bell,Shield,Globe,Key,Palette,Save,Check,Loader as Loader2,Eye,EyeOff,AlertTriangle,Monitor,Moon,Sun,Camera,Upload,Download,Trash2}from'lucide-react';
+import{User,Bell,Shield,Globe,Key,Palette,Save,Check,Loader as Loader2,Eye,EyeOff,AlertTriangle,Monitor,Moon,Sun,Camera,Upload,Download,Trash2,SlidersHorizontal,Pin,FolderGit2,Bug,Layers,Server,Sparkles,Building2,X,Compass,Rocket}from'lucide-react';
+import{usePins,removePin,togglePin,pinKey,type PinType,type PinItem}from'../lib/pins';
 
 type NotifPref={email_validations:boolean;email_critical:boolean;email_digest:boolean;email_deployments:boolean;};
 type AppPref={theme:'light'|'dark'|'system';timezone:string;language:string;};
@@ -16,7 +17,24 @@ export function SettingsPage(){
   const[loading,setLoading]=useState(false);
   const[saving,setSaving]=useState(false);
   const[saved,setSaved]=useState('');
-  const[tab,setTab]=useState<'profile'|'notifications'|'security'|'appearance'>('profile');
+  const[tab,setTab]=useState<'profile'|'sidebar'|'notifications'|'security'|'appearance'>('profile');
+
+  // Sidebar Preferences
+  const pins = usePins();
+  const [defaultView, setDefaultView] = useState(() => localStorage.getItem('lythouse.defaultView') || '/dashboard');
+
+  const saveSidebarSettings = () => {
+    localStorage.setItem('lythouse.defaultView', defaultView);
+    setSaved('sidebar');
+    setTimeout(() => setSaved(''), 2500);
+  };
+
+  const PIN_RECOMMENDATIONS: PinItem[] = [
+    { type: 'project', id: 'rec-projects', label: 'All Projects', to: '/projects', sub: 'Repositories & Code' },
+    { type: 'finding', id: 'rec-crit-findings', label: 'Critical Issues', to: '/findings?sev=critical', sub: 'High risk alerts' },
+    { type: 'stack', id: 'rec-stacks', label: 'Infrastructure Stacks', to: '/stacks', sub: 'Service architectures' },
+    { type: 'environment', id: 'rec-env', label: 'Environment Readiness', to: '/environment', sub: 'Stage & prod verification' },
+  ];
 
   // Profile
   const[fullName,setFullName]=useState('');
@@ -203,6 +221,7 @@ export function SettingsPage(){
 
   const TABS=[
     {id:'profile',label:'Profile',icon:User},
+    {id:'sidebar',label:'Sidebar',icon:SlidersHorizontal},
     {id:'notifications',label:'Notifications',icon:Bell},
     {id:'appearance',label:'Appearance',icon:Palette},
     {id:'security',label:'Security',icon:Shield},
@@ -284,6 +303,117 @@ export function SettingsPage(){
                 <span className={`text-sm font-medium text-navy-900 ${cls}`}>{value}</span>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Sidebar customization tab */}
+    {tab==='sidebar'&&(
+      <div className="max-w-xl space-y-6">
+        <div className="card">
+          <h2 className="text-base font-semibold text-navy-900 mb-1 flex items-center gap-2">
+            <SlidersHorizontal size={17} className="text-brand-600"/>
+            Sidebar customization
+          </h2>
+          <p className="text-xs text-gray-500 mb-5 leading-relaxed">
+            Manage your pinned sidebar items here. To pin new items, use the pin button in the main navigation. You can also choose the default view of your account.
+          </p>
+
+          {/* Default view selector */}
+          <div className="mb-6 pb-6 border-b border-gray-100">
+            <label className="label font-medium text-sm text-navy-900 mb-1.5 block">Default view</label>
+            <p className="text-xs text-gray-500 mb-2">Choose the landing view when you open your workspace.</p>
+            <select
+              className="input max-w-md text-sm"
+              value={defaultView}
+              onChange={e => setDefaultView(e.target.value)}
+            >
+              <option value="/ask">✨ Infra Assistant</option>
+              <option value="/dashboard">☼ Overview / Dashboard</option>
+              <option value="/projects">&lt;/&gt; Projects & Repositories</option>
+              <option value="/runs">≡ Runs & Executions</option>
+              <option value="/pipeline">⛯ Release Pipelines</option>
+              <option value="/deployments">🚀 Deployments</option>
+              <option value="/findings">⬡ Findings & Issues</option>
+              <option value="/change-management">📋 Change Management</option>
+              <option value="/stacks">⚯ Stacks</option>
+            </select>
+          </div>
+
+          {/* Pinned sidebar items section */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="label font-medium text-sm text-navy-900 mb-0">Pinned sidebar items</label>
+              <span className="text-xs text-gray-400 font-medium">{pins.length} pinned</span>
+            </div>
+
+            {pins.length === 0 ? (
+              <div className="rounded-xl border-2 border-dashed border-gray-200 p-6 text-center bg-gray-50/50 my-3">
+                <div className="mx-auto w-10 h-10 rounded-full bg-gray-100 grid place-items-center text-gray-400 mb-2.5">
+                  <Pin size={18} />
+                </div>
+                <p className="text-sm font-semibold text-navy-900 mb-1">You don’t have any pinned items yet</p>
+                <p className="text-xs text-gray-500 max-w-sm mx-auto">
+                  Pinned items can be used to quickly access frequently used items.
+                </p>
+
+                {/* Quick Add Recommendations */}
+                <div className="mt-4 pt-4 border-t border-gray-200/60">
+                  <p className="text-xs font-medium text-gray-400 mb-2">Suggested items to pin:</p>
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    {PIN_RECOMMENDATIONS.map(rec => (
+                      <button
+                        key={rec.id}
+                        type="button"
+                        onClick={() => togglePin(rec)}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-brand-500 hover:text-brand-600 transition-colors shadow-sm"
+                      >
+                        <Plus size={12} />
+                        {rec.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2 my-3">
+                {pins.map(p => (
+                  <div
+                    key={pinKey(p.type, p.id)}
+                    className="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-white hover:border-gray-300 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-brand-50 text-brand-600 grid place-items-center flex-shrink-0">
+                        {p.type === 'project' ? <FolderGit2 size={15} /> :
+                         p.type === 'finding' ? <Bug size={15} /> :
+                         p.type === 'stack' ? <Layers size={15} /> :
+                         p.type === 'environment' ? <Server size={15} /> :
+                         <Building2 size={15} />}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-navy-900 truncate">{p.label}</p>
+                        <p className="text-xs text-gray-400 capitalize">{p.type} · {p.to}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removePin(p.type, p.id)}
+                      className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title={`Unpin ${p.label}`}
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-gray-100">
+            <button onClick={saveSidebarSettings} className="btn-primary">
+              {saved === 'sidebar' ? <><Check size={15} />Saved!</> : <><Save size={15} />Save sidebar settings</>}
+            </button>
           </div>
         </div>
       </div>

@@ -32,28 +32,34 @@ const PIN_ICONS: Record<PinType, any> = {
 
 const CSS = `
 :root {
+  --sidebar-width: 238px;
   --lh-bg: #f8fafc;
   --lh-surface: #ffffff;
   --lh-surface2: #f1f5f9;
   --lh-surface-hover: #e2e8f0;
-  --lh-sidebar: #ffffff;
-  --lh-sidebar-border: #e2e8f0;
-  --lh-border: #e2e8f0;
-  --lh-border2: #cbd5e1;
+  --lh-surface-sidebar: #fafafa;
+  --lh-sidebar-hover: rgba(15, 23, 42, 0.045);
+  --lh-sidebar-active: #edf4ff;
+  --lh-sidebar-active-text: #1d4ed8;
+  --lh-sidebar-border: rgba(15, 23, 42, 0.07);
+  --lh-border-subtle: rgba(15, 23, 42, 0.07);
+  --lh-border: rgba(15, 23, 42, 0.10);
+  --lh-border2: rgba(15, 23, 42, 0.16);
   --lh-text: #0f172a;
   --lh-text2: #475569;
   --lh-text3: #94a3b8;
+  --lh-text-muted: #64748b;
   --lh-accent: #2563eb;
   --lh-accent-hover: #1d4ed8;
-  --lh-accent-weak: #eff6ff;
+  --lh-accent-weak: #edf4ff;
   --lh-accent-contrast: #ffffff;
-  --lh-ring: rgba(37, 99, 235, 0.2);
-  --lh-purple-bg: #f5f3ff;
+  --lh-ring: rgba(37, 99, 235, 0.18);
+  --lh-purple-bg: linear-gradient(90deg, rgba(139, 92, 246, 0.07), rgba(59, 130, 246, 0.04));
   --lh-purple-text: #7c3aed;
-  --lh-purple-border: #ede9fe;
-  --lh-purple-hover: #ede9fe;
+  --lh-purple-border: rgba(124, 58, 237, 0.15);
+  --lh-purple-hover: rgba(124, 58, 237, 0.08);
   --lh-dropdown-bg: #ffffff;
-  --lh-dropdown-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  --lh-dropdown-shadow: 0 8px 30px rgba(0, 0, 0, 0.10), 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 :root[data-theme="dark"] {
@@ -61,54 +67,64 @@ const CSS = `
   --lh-surface: #0f172a;
   --lh-surface2: #1e293b;
   --lh-surface-hover: #334155;
-  --lh-sidebar: #0b0f19;
-  --lh-sidebar-border: #1e293b;
-  --lh-border: #1e293b;
-  --lh-border2: #334155;
+  --lh-surface-sidebar: #101113;
+  --lh-sidebar-hover: rgba(255, 255, 255, 0.055);
+  --lh-sidebar-active: rgba(96, 165, 250, 0.14);
+  --lh-sidebar-active-text: #60a5fa;
+  --lh-sidebar-border: rgba(255, 255, 255, 0.06);
+  --lh-border-subtle: rgba(255, 255, 255, 0.06);
+  --lh-border: rgba(255, 255, 255, 0.10);
+  --lh-border2: rgba(255, 255, 255, 0.16);
   --lh-text: #f8fafc;
-  --lh-text2: #94a3b8;
-  --lh-text3: #64748b;
+  --lh-text2: #b6bcc6;
+  --lh-text3: #7f8793;
+  --lh-text-muted: #7f8793;
   --lh-accent: #3b82f6;
   --lh-accent-hover: #60a5fa;
   --lh-accent-weak: rgba(59, 130, 246, 0.14);
   --lh-accent-contrast: #ffffff;
   --lh-ring: rgba(59, 130, 246, 0.28);
-  --lh-purple-bg: rgba(124, 58, 237, 0.15);
+  --lh-purple-bg: linear-gradient(90deg, rgba(139, 92, 246, 0.12), rgba(59, 130, 246, 0.08));
   --lh-purple-text: #c084fc;
-  --lh-purple-border: rgba(124, 58, 237, 0.3);
-  --lh-purple-hover: rgba(124, 58, 237, 0.25);
-  --lh-dropdown-bg: #111827;
-  --lh-dropdown-shadow: 0 20px 50px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --lh-purple-border: rgba(124, 58, 237, 0.25);
+  --lh-purple-hover: rgba(124, 58, 237, 0.18);
+  --lh-dropdown-bg: #141820;
+  --lh-dropdown-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 .lh-app {
   min-height: 100vh;
   background: var(--lh-bg);
   color: var(--lh-text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.005em;
 }
 
-/* Sidebar Root */
+/* Sidebar Root - Strict 238px Geometry */
 .lh-sb {
-  background: var(--lh-sidebar);
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  background: var(--lh-surface-sidebar);
   display: flex;
   flex-direction: column;
-  height: 100%;
-  border-right: 1px solid var(--lh-sidebar-border);
+  height: 100vh;
+  border-right: 1px solid var(--lh-border-subtle);
   position: relative;
   user-select: none;
   font-size: 13px;
   overflow: hidden;
+  box-shadow: none;
 }
 
-/* Spacelift Top Header Bar */
+/* Spacelift Top Header Bar - 48px Height */
 .lh-space-top {
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px 10px 14px;
+  padding: 0 12px;
   gap: 8px;
-  position: relative;
+  flex-shrink: 0;
 }
 
 .lh-space-left {
@@ -120,35 +136,35 @@ const CSS = `
 }
 
 .lh-space-logo {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   background: #0f172a;
   display: grid;
   place-items: center;
   color: #38bdf8;
   flex-shrink: 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
 .lh-space-wsbtn {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   border: 0;
   background: transparent;
   color: var(--lh-text);
   font-weight: 600;
-  font-size: 13.5px;
+  font-size: 13px;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 5px 6px;
   border-radius: 6px;
-  transition: background 0.15s ease;
+  transition: background-color 120ms ease;
   min-width: 0;
 }
 
 .lh-space-wsbtn:hover, .lh-space-wsbtn.open {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
 }
 
 .lh-space-wsbtn .ws-name {
@@ -160,7 +176,7 @@ const CSS = `
 .lh-space-wsbtn .ws-chev {
   color: var(--lh-text3);
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform 140ms ease;
 }
 
 .lh-space-wsbtn.open .ws-chev {
@@ -175,46 +191,47 @@ const CSS = `
 }
 
 .lh-space-iconbtn {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 6px;
   border: 0;
   background: transparent;
-  color: var(--lh-text2);
+  color: var(--lh-text3);
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
 }
 
 .lh-space-iconbtn:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
 .lh-space-badgebtn {
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 3px 7px;
-  border-radius: 12px;
-  border: 1px solid var(--lh-border);
-  background: var(--lh-surface2);
-  color: var(--lh-text2);
-  font-size: 11px;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--lh-border-subtle);
+  background: var(--lh-surface);
+  color: var(--lh-text3);
+  font-size: 10.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
 }
 
 .lh-space-badgebtn:hover {
-  border-color: var(--lh-border2);
+  border-color: var(--lh-border);
   color: var(--lh-text);
 }
 
-/* Search + Ask AI Unified Pill Row */
+/* Search + Ask AI Pill Box - 32px Height */
 .lh-search-ask-wrap {
-  padding: 0 12px 10px;
+  padding: 0 10px 8px;
+  flex-shrink: 0;
 }
 
 .lh-search-ask-box {
@@ -222,49 +239,58 @@ const CSS = `
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 5px 6px 5px 10px;
-  background: var(--lh-surface2);
-  border: 1px solid var(--lh-border);
-  border-radius: 9px;
+  height: 32px;
+  padding: 0 6px 0 8px;
+  background: var(--lh-surface);
+  border: 1px solid var(--lh-border-subtle);
+  border-radius: 7px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
 }
 
 .lh-search-ask-box:hover {
-  border-color: var(--lh-border2);
-  background: var(--lh-surface-hover);
+  border-color: var(--lh-border);
+  background: var(--lh-surface);
+}
+
+.lh-search-ask-box:focus-within {
+  border-color: var(--lh-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--lh-accent) 12%, transparent);
 }
 
 .lh-search-ask-left {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   color: var(--lh-text3);
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 400;
 }
 
 .lh-search-ask-right {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
+  gap: 3px;
+  height: 24px;
+  padding: 0 7px;
   border-radius: 6px;
   background: var(--lh-purple-bg);
   color: var(--lh-purple-text);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   border: 1px solid var(--lh-purple-border);
-  transition: all 0.15s ease;
+  cursor: pointer;
+  transition: all 120ms ease;
 }
 
 .lh-search-ask-right:hover {
   background: var(--lh-purple-hover);
 }
 
-/* Pinned Section */
+/* Pinned Section - 32px Header & Items */
 .lh-pinned-wrap {
-  padding: 0 12px 10px;
+  padding: 0 10px 8px;
+  flex-shrink: 0;
 }
 
 .lh-pinned-header {
@@ -272,19 +298,21 @@ const CSS = `
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 5px 6px;
+  height: 32px;
+  padding: 0 6px;
   border: 0;
   background: transparent;
-  color: var(--lh-text);
-  font-size: 12.5px;
-  font-weight: 600;
+  color: var(--lh-text2);
+  font-size: 12px;
+  font-weight: 550;
   cursor: pointer;
   border-radius: 6px;
-  transition: background 0.15s ease;
+  transition: background-color 120ms ease;
 }
 
 .lh-pinned-header:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
+  color: var(--lh-text);
 }
 
 .lh-pinned-header-left {
@@ -294,34 +322,33 @@ const CSS = `
 }
 
 .lh-pinned-empty-card {
-  margin-top: 4px;
-  padding: 12px 10px;
-  border-radius: 10px;
-  border: 1px dashed var(--lh-border2);
-  background: var(--lh-surface2);
+  margin-top: 2px;
+  padding: 10px;
+  border-radius: 7px;
+  border: 1px dashed var(--lh-border-subtle);
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .lh-pinned-badge-preview {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border-radius: 6px;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 5px;
   background: var(--lh-surface);
-  border: 1px solid var(--lh-border);
-  font-size: 11px;
-  font-weight: 600;
+  border: 1px solid var(--lh-border-subtle);
+  font-size: 10.5px;
+  font-weight: 550;
   color: var(--lh-text2);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .lh-pinned-empty-text {
-  font-size: 11.5px;
+  font-size: 11px;
   line-height: 1.35;
   color: var(--lh-text3);
 }
@@ -329,18 +356,19 @@ const CSS = `
 .lh-pinned-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
+  gap: 7px;
+  height: 30px;
+  padding: 0 8px;
   border-radius: 6px;
   color: var(--lh-text2);
   text-decoration: none;
-  font-size: 12.5px;
-  transition: all 0.15s ease;
+  font-size: 12px;
+  transition: all 120ms ease;
   position: relative;
 }
 
 .lh-pinned-item:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
@@ -355,7 +383,7 @@ const CSS = `
   padding: 2px;
   border-radius: 4px;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  transition: opacity 120ms ease;
 }
 
 .lh-pinned-item:hover .unpin-btn {
@@ -364,28 +392,29 @@ const CSS = `
 
 .lh-pinned-item .unpin-btn:hover {
   color: var(--lh-text);
-  background: var(--lh-surface-hover);
 }
 
-/* Infra Assistant Pill Button */
+/* Infra Assistant Pill Action - 34px Height */
 .lh-infra-ai-btn-wrap {
-  padding: 0 12px 10px;
+  padding: 0 10px 8px;
+  flex-shrink: 0;
 }
 
 .lh-infra-ai-btn {
   width: 100%;
+  height: 34px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border-radius: 8px;
+  gap: 7px;
+  padding: 0 10px;
+  border-radius: 7px;
   background: var(--lh-purple-bg);
   border: 1px solid var(--lh-purple-border);
   color: var(--lh-purple-text);
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 550;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
   text-align: left;
 }
 
@@ -398,62 +427,64 @@ const CSS = `
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 12px 12px;
+  padding: 0 10px 10px;
   scrollbar-width: thin;
-  scrollbar-color: var(--lh-border2) transparent;
+  scrollbar-color: var(--lh-border-subtle) transparent;
 }
 
 .lh-nav-scroll::-webkit-scrollbar {
   width: 4px;
 }
 .lh-nav-scroll::-webkit-scrollbar-thumb {
-  background: var(--lh-border2);
+  background: var(--lh-border-subtle);
   border-radius: 4px;
 }
 
-/* Capability Accordion Group */
+/* Capability Accordion Group - 34px Row Height */
 .lh-sl-group {
+  margin-top: 2px;
   margin-bottom: 2px;
 }
 
 .lh-sl-hdr-btn {
   width: 100%;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 10px;
+  padding: 0 8px;
   border: 0;
   background: transparent;
   color: var(--lh-text2);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.15s ease;
+  border-radius: 6px;
+  transition: background-color 120ms ease, color 120ms ease;
   text-align: left;
 }
 
 .lh-sl-hdr-btn:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
 .lh-sl-hdr-btn.is-active-group {
-  background: var(--lh-accent-weak);
-  color: var(--lh-accent);
-  font-weight: 600;
+  color: var(--lh-text);
+  font-weight: 550;
 }
 
 .lh-sl-hdr-left {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   min-width: 0;
   flex: 1;
 }
 
 .lh-sl-hdr-left .icon {
   flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .lh-sl-hdr-left .label {
@@ -464,7 +495,8 @@ const CSS = `
 
 .lh-sl-hdr-chev {
   color: var(--lh-text3);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.65;
+  transition: transform 140ms ease;
   flex-shrink: 0;
 }
 
@@ -472,11 +504,11 @@ const CSS = `
   transform: rotate(90deg);
 }
 
-/* Collapsible Section Container */
+/* Collapsible Section Container - 160ms ease */
 .lh-sl-collapse {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 160ms ease;
 }
 
 .lh-sl-collapse.open {
@@ -486,15 +518,12 @@ const CSS = `
 .lh-sl-collapse-inner {
   overflow: hidden;
   min-height: 0;
-  padding: 2px 0 4px 14px;
-  margin-left: 14px;
-  border-left: 1px solid var(--lh-sidebar-border);
   display: flex;
   flex-direction: column;
   gap: 1px;
 }
 
-/* Nav Item Link */
+/* Child Navigation Item Link - 30px Height, 34px Left Indent */
 .lh-item-row-wrap {
   display: flex;
   align-items: center;
@@ -506,53 +535,55 @@ const CSS = `
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
+  height: 30px;
+  padding-left: 30px;
+  padding-right: 6px;
   border-radius: 6px;
   color: var(--lh-text2);
   text-decoration: none;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 450;
   flex: 1;
   min-width: 0;
-  transition: all 0.12s ease;
+  transition: background-color 120ms ease, color 120ms ease;
 }
 
 .lh-item:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
 .lh-item.active {
-  background: var(--lh-accent-weak);
-  color: var(--lh-accent);
-  font-weight: 600;
+  background: var(--lh-sidebar-active);
+  color: var(--lh-sidebar-active-text);
+  font-weight: 550;
 }
 
 .lh-item-badge {
-  font-size: 10.5px;
-  padding: 1px 6px;
-  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 550;
+  padding: 1px 5px;
+  border-radius: 5px;
   background: var(--lh-surface2);
   color: var(--lh-text3);
-  font-weight: 600;
 }
 
 .lh-facet-toggle {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   margin-right: 4px;
   border: 0;
   background: transparent;
   color: var(--lh-text3);
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform 140ms ease, color 120ms ease;
 }
 
 .lh-facet-toggle:hover {
-  background: var(--lh-surface-hover);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
@@ -561,11 +592,11 @@ const CSS = `
   color: var(--lh-accent);
 }
 
-/* Faceted Subfilters */
+/* Faceted Subfilters - 26px Height, 40px Left Indent */
 .lh-facet-collapse {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 140ms ease;
 }
 
 .lh-facet-collapse.open {
@@ -575,9 +606,6 @@ const CSS = `
 .lh-facet-sublist {
   overflow: hidden;
   min-height: 0;
-  margin: 1px 0 3px 12px;
-  padding-left: 8px;
-  border-left: 1px dashed var(--lh-border2);
   display: flex;
   flex-direction: column;
   gap: 1px;
@@ -587,23 +615,25 @@ const CSS = `
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 6px;
+  height: 26px;
+  padding-left: 40px;
+  padding-right: 6px;
   border-radius: 5px;
   color: var(--lh-text2);
   text-decoration: none;
   font-size: 11.5px;
-  transition: all 0.12s ease;
+  transition: background-color 120ms ease, color 120ms ease;
 }
 
 .lh-facet-link:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
 .lh-facet-link.active {
-  background: var(--lh-accent-weak);
-  color: var(--lh-accent);
-  font-weight: 600;
+  background: var(--lh-sidebar-active);
+  color: var(--lh-sidebar-active-text);
+  font-weight: 550;
 }
 
 .lh-facet-dot {
@@ -620,73 +650,70 @@ const CSS = `
   white-space: nowrap;
 }
 
-.lh-facet-badge {
-  font-size: 9.5px;
-  font-weight: 700;
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: var(--lh-surface2);
+.lh-facet-count {
+  font-size: 10px;
+  font-weight: 500;
   color: var(--lh-text3);
+  margin-left: auto;
 }
-.lh-facet-badge.danger { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
-.lh-facet-badge.warning { background: rgba(245, 158, 11, 0.12); color: #d97706; }
-.lh-facet-badge.success { background: rgba(16, 185, 129, 0.12); color: #10b981; }
-.lh-facet-badge.info { background: rgba(56, 189, 248, 0.12); color: #0284c7; }
 
 /* Sidebar Bottom Footer */
 .lh-sl-footer {
-  border-top: 1px solid var(--lh-sidebar-border);
-  padding: 8px 12px 10px;
-  background: var(--lh-sidebar);
+  border-top: 1px solid var(--lh-border-subtle);
+  padding: 6px 10px 8px;
+  background: var(--lh-surface-sidebar);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
 .lh-support-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 10px;
-  border-radius: 8px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
   border: 0;
   background: transparent;
   color: var(--lh-text2);
   text-decoration: none;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
 }
 
 .lh-support-btn:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
 .lh-support-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .lh-sl-user-btn {
   width: 100%;
+  height: 40px;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 6px 8px;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 0 6px;
+  border-radius: 6px;
   border: 0;
   background: transparent;
   color: var(--lh-text);
   cursor: pointer;
   text-align: left;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
 }
 
 .lh-sl-user-btn:hover, .lh-sl-user-btn.open {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
 }
 
 .lh-sl-user-avatar {
@@ -697,8 +724,8 @@ const CSS = `
   color: #ffffff;
   display: grid;
   place-items: center;
-  font-weight: 700;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 11.5px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -711,22 +738,23 @@ const CSS = `
 }
 
 .lh-sl-user-name {
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 550;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.25;
 }
 
 .lh-sl-user-company {
-  font-size: 11px;
-  color: var(--lh-text3);
+  font-size: 10px;
+  color: var(--lh-text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* Floating Popovers */
+/* Floating Popovers - Elevated Menus */
 .lh-wsm-ov {
   position: fixed;
   inset: 0;
@@ -736,30 +764,30 @@ const CSS = `
 .lh-popover {
   position: absolute;
   z-index: 110;
-  width: 260px;
+  width: 240px;
   background: var(--lh-dropdown-bg);
   border: 1px solid var(--lh-border);
-  border-radius: 12px;
+  border-radius: 9px;
   padding: 6px;
   box-shadow: var(--lh-dropdown-shadow);
 }
 
 .lh-popover.top-ws {
   top: 48px;
-  left: 12px;
+  left: 10px;
 }
 
 .lh-popover.up-user {
-  bottom: 56px;
-  left: 12px;
+  bottom: 50px;
+  left: 10px;
 }
 
 .lh-pop-sec-title {
-  padding: 6px 8px 3px;
-  font-size: 10.5px;
-  font-weight: 700;
+  padding: 5px 8px 3px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
   color: var(--lh-text3);
   display: flex;
   justify-content: space-between;
@@ -767,30 +795,31 @@ const CSS = `
 
 .lh-pop-item {
   width: 100%;
+  height: 32px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
+  gap: 7px;
+  padding: 0 8px;
   border-radius: 6px;
   border: 0;
   background: transparent;
   color: var(--lh-text2);
-  font-size: 12.5px;
+  font-size: 12px;
   text-decoration: none;
   cursor: pointer;
   text-align: left;
-  transition: all 0.12s ease;
+  transition: all 120ms ease;
 }
 
 .lh-pop-item:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
   color: var(--lh-text);
 }
 
 .lh-pop-item.active {
-  background: var(--lh-accent-weak);
-  color: var(--lh-accent);
-  font-weight: 600;
+  background: var(--lh-sidebar-active);
+  color: var(--lh-sidebar-active-text);
+  font-weight: 550;
 }
 
 .lh-pop-item .nm {
@@ -802,39 +831,40 @@ const CSS = `
 
 .lh-pop-divider {
   height: 1px;
-  background: var(--lh-border);
-  margin: 5px 0;
+  background: var(--lh-border-subtle);
+  margin: 4px 0;
 }
 
 .lh-theme-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 8px;
+  height: 32px;
+  padding: 0 8px;
   border-radius: 6px;
   cursor: pointer;
   user-select: none;
 }
 
 .lh-theme-row:hover {
-  background: var(--lh-surface2);
+  background: var(--lh-sidebar-hover);
 }
 
 .lh-theme-info {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
+  gap: 7px;
+  font-size: 12px;
   color: var(--lh-text2);
 }
 
 .lh-switch {
-  width: 32px;
-  height: 18px;
-  border-radius: 9px;
+  width: 30px;
+  height: 16px;
+  border-radius: 8px;
   background: var(--lh-border2);
   position: relative;
-  transition: background 0.2s ease;
+  transition: background 140ms ease;
 }
 
 .lh-switch.active {
@@ -845,11 +875,11 @@ const CSS = `
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: #ffffff;
-  transition: transform 0.2s ease;
+  transition: transform 140ms ease;
 }
 
 .lh-switch.active .lh-switch-thumb {
@@ -861,18 +891,18 @@ const CSS = `
   position: sticky;
   top: 0;
   z-index: 30;
-  height: 52px;
+  height: 48px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 24px;
-  border-bottom: 1px solid var(--lh-border);
-  background: color-mix(in srgb, var(--lh-bg) 88%, transparent);
+  padding: 0 20px;
+  border-bottom: 1px solid var(--lh-border-subtle);
+  background: color-mix(in srgb, var(--lh-bg) 92%, transparent);
   backdrop-filter: blur(12px);
 }
 
 .lh-title {
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
@@ -880,46 +910,46 @@ const CSS = `
 .lh-plan-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 20px;
-  border: 1px solid var(--lh-border);
+  border: 1px solid var(--lh-border-subtle);
   background: var(--lh-surface);
   color: var(--lh-text2);
   text-decoration: none;
 }
 
 .lh-plan-badge .up {
-  font-size: 10px;
+  font-size: 9.5px;
   text-transform: none;
   background: var(--lh-accent);
   color: #fff;
-  padding: 1px 6px;
-  border-radius: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
 }
 
 .lh-iconbtn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: 1px solid var(--lh-border);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--lh-border-subtle);
   background: var(--lh-surface);
   color: var(--lh-text2);
   cursor: pointer;
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
 }
 
 .lh-iconbtn:hover {
   background: var(--lh-surface2);
   color: var(--lh-text);
-  border-color: var(--lh-border2);
+  border-color: var(--lh-border);
 }
 
 .lh-mobile-menu {
@@ -940,27 +970,27 @@ const CSS = `
 /* Floating Ask AI Button */
 .lh-ai {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: 20px;
+  bottom: 20px;
   z-index: 60;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 30px;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 24px;
   background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
   color: #fff;
   border: 0;
   cursor: pointer;
   font-weight: 600;
-  font-size: 13px;
-  box-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.4);
-  transition: all 0.2s ease;
+  font-size: 12.5px;
+  box-shadow: 0 6px 20px -4px rgba(124, 58, 237, 0.4);
+  transition: all 140ms ease;
 }
 
 .lh-ai:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px -4px rgba(124, 58, 237, 0.55);
+  box-shadow: 0 10px 24px -4px rgba(124, 58, 237, 0.55);
 }
 
 /* Modals */
@@ -977,60 +1007,60 @@ const CSS = `
 }
 
 .lh-orgm {
-  width: min(94vw, 440px);
+  width: min(94vw, 420px);
   background: var(--lh-surface);
   border: 1px solid var(--lh-border);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
 }
 
 .lh-orgm h3 {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   margin: 0;
 }
 
 .lh-orgm p {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--lh-text3);
-  margin: 6px 0 0;
+  margin: 5px 0 0;
 }
 
 .lh-orgm input {
   width: 100%;
-  margin-top: 16px;
+  margin-top: 14px;
   background: var(--lh-surface2);
   border: 1px solid var(--lh-border);
-  border-radius: 8px;
-  padding: 9px 12px;
-  font-size: 13.5px;
+  border-radius: 7px;
+  padding: 8px 11px;
+  font-size: 13px;
   color: var(--lh-text);
   outline: none;
 }
 
 .lh-orgm input:focus {
   border-color: var(--lh-accent);
-  box-shadow: 0 0 0 3px var(--lh-ring);
+  box-shadow: 0 0 0 2px var(--lh-ring);
 }
 
 .lh-orgm .row {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 8px;
+  margin-top: 18px;
   justify-content: flex-end;
 }
 
 .lh-orgm .b {
-  border-radius: 8px;
-  padding: 8px 14px;
+  border-radius: 6px;
+  padding: 7px 13px;
   border: 1px solid var(--lh-border);
   background: transparent;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 550;
   color: var(--lh-text2);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 120ms ease;
 }
 
 .lh-orgm .b:hover {
@@ -1051,6 +1081,8 @@ function isPathActive(path: string, to: string) {
   return path === to || path.startsWith(to + '/')
 }
 
+const STORAGE_EXPANDED_KEY = 'lythouse.navOpenSections'
+
 export function AppShell({ children }: { children: ReactNode }) {
   const { path, search, fullPath, navigate } = useRouter()
   const { user, profile, signOut } = useAuth()
@@ -1070,8 +1102,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [aiOpen, setAiOpen] = useState(false)
 
-  // Manage open Spacelift capability accordion sections
+  // Manage open Spacelift capability accordion sections (persisted to localStorage)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_EXPANDED_KEY)
+      if (saved) return JSON.parse(saved)
+    } catch {}
     const initial: Record<string, boolean> = {
       insights: true // default open top section like Spacelift Launchpad
     }
@@ -1086,11 +1122,30 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('lh.theme') as any) || 'light')
   const pins = usePins()
 
+  // Save expanded states
+  const toggleSection = (sectionId: string) => {
+    setOpenSections(prev => {
+      const updated = {
+        ...prev,
+        [sectionId]: !prev[sectionId]
+      }
+      try {
+        localStorage.setItem(STORAGE_EXPANDED_KEY, JSON.stringify(updated))
+      } catch {}
+      return updated
+    })
+  }
+
   // Auto-expand section when navigated into
   useEffect(() => {
     SPACELIFT_SECTIONS.forEach(sec => {
       if (sec.items.some(i => isPathActive(path, i.to))) {
-        setOpenSections(prev => ({ ...prev, [sec.id]: true }))
+        setOpenSections(prev => {
+          if (prev[sec.id]) return prev
+          const updated = { ...prev, [sec.id]: true }
+          try { localStorage.setItem(STORAGE_EXPANDED_KEY, JSON.stringify(updated)) } catch {}
+          return updated
+        })
       }
     })
   }, [path])
@@ -1153,13 +1208,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark')
-
-  const toggleSection = (sectionId: string) => {
-    setOpenSections(prev => ({
-      ...prev,
-      [sectionId]: !prev[sectionId]
-    }))
-  }
 
   const orgWorkspaces = useMemo(
     () => activeOrg ? wsList.filter(w => !w.organization_id || w.organization_id === activeOrg.id) : wsList,
@@ -1231,7 +1279,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             className={`lh-item ${isRootActive ? 'active' : ''}`}
             title={item.description || item.label}
           >
-            <Icon size={size} strokeWidth={active ? 2.1 : 1.8} />
+            <Icon size={size} strokeWidth={active ? 2 : 1.75} />
             <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {item.label}
             </span>
@@ -1249,7 +1297,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               title={facetOpen ? 'Collapse sub-filters' : 'Expand sub-filters'}
               aria-label={`Toggle facets for ${item.label}`}
             >
-              <ChevronRight size={13} />
+              <ChevronRight size={12} />
             </button>
           )}
         </div>
@@ -1275,9 +1323,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     />
                     <span className="lh-facet-text">{facet.label}</span>
                     {facet.badge && (
-                      <span className={`lh-facet-badge ${facet.badgeVariant || 'default'}`}>
-                        {facet.badge}
-                      </span>
+                      <span className="lh-facet-count">{facet.badge}</span>
                     )}
                   </Link>
                 )
@@ -1297,7 +1343,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lh-space-top">
         <div className="lh-space-left">
           <div className="lh-space-logo" title="Lythouse Cloud">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2v20M12 2l5 6M12 2L7 8"/>
               <circle cx="12" cy="16" r="2.5" fill="currentColor"/>
             </svg>
@@ -1308,7 +1354,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             onClick={() => { setUserMenuOpen(false); setWsMenuOpen(v => !v) }}
           >
             <span className="ws-name">{activeWs?.name || 'Deploy'}</span>
-            <ChevronDown size={14} className="ws-chev" />
+            <ChevronDown size={13} className="ws-chev" />
           </button>
         </div>
 
@@ -1395,7 +1441,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lh-search-ask-wrap">
         <div className="lh-search-ask-box" onClick={() => setPaletteOpen(true)}>
           <div className="lh-search-ask-left">
-            <Search size={13} />
+            <Search size={12} />
             <span>Search Ctrl+K</span>
           </div>
           <button
@@ -1424,11 +1470,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span>Pinned</span>
           </div>
           <ChevronDown
-            size={13}
+            size={12}
             style={{
               color: 'var(--lh-text3)',
               transform: pinnedOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
-              transition: 'transform 0.15s ease'
+              transition: 'transform 140ms ease'
             }}
           />
         </button>
@@ -1438,14 +1484,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="lh-pinned-empty-card">
               <div className="lh-pinned-badge-preview">
                 <span>Stacks</span>
-                <Pin size={11} />
+                <Pin size={10} />
               </div>
               <span className="lh-pinned-empty-text">
                 Quickly access your most important links by pinning them.
               </span>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 1, marginTop: 4 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 1, marginTop: 2 }}>
               {pins.map(p => {
                 const I = PIN_ICONS[p.type] || FolderGit2
                 return (
@@ -1508,7 +1554,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <div className={`lh-sl-collapse ${isOpen ? 'open' : ''}`}>
                 <div className="lh-sl-collapse-inner">
                   {sec.items.map(i => (
-                    <NavItemRow key={i.to} item={i} size={14} />
+                    <NavItemRow key={i.to} item={i} size={13.5} />
                   ))}
                 </div>
               </div>
@@ -1521,10 +1567,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="lh-sl-footer">
         <Link to="/docs" onClick={go} className="lh-support-btn">
           <div className="lh-support-left">
-            <LifeBuoy size={14} />
+            <LifeBuoy size={13.5} />
             <span>Support & Feedback</span>
           </div>
-          <ChevronRight size={13} style={{ color: 'var(--lh-text3)' }} />
+          <ChevronRight size={12} style={{ color: 'var(--lh-text3)' }} />
         </Link>
 
         <button
@@ -1541,7 +1587,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="lh-sl-user-name">{profile?.full_name || 'Qitmeer Raza'}</span>
             <span className="lh-sl-user-company">{activeOrg?.name || 'augerelabs'}</span>
           </div>
-          <ChevronRight size={13} style={{ color: 'var(--lh-text3)' }} />
+          <ChevronRight size={12} style={{ color: 'var(--lh-text3)' }} />
         </button>
 
         {/* User Menu Popover */}
@@ -1605,8 +1651,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="lh-app">
       <style>{CSS}</style>
 
-      {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 lg:block">
+      {/* Desktop Sidebar (strict 238px) */}
+      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[238px] lg:block">
         {Sidebar}
       </aside>
 
@@ -1618,7 +1664,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         />
       )}
       <aside
-        className={`fixed left-0 top-0 z-50 h-screen w-64 transition-transform duration-200 lg:hidden ${
+        className={`fixed left-0 top-0 z-50 h-screen w-[238px] transition-transform duration-200 lg:hidden ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -1626,14 +1672,14 @@ export function AppShell({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main Content Area */}
-      <div className="lg:pl-64 lh-shell-body">
+      <div className="lg:pl-[238px] lh-shell-body">
         <header className="lh-tb">
           <button
             onClick={() => setMobileOpen(true)}
             className="lh-iconbtn lh-mobile-menu"
             aria-label="Open navigation"
           >
-            <Menu size={16} />
+            <Menu size={15} />
           </button>
           <span className="lh-title">{pageTitle}</span>
 
@@ -1650,12 +1696,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             onClick={toggleTheme}
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
           </button>
         </header>
 
         <main
-          className={isProjectWorkspace ? "w-full min-h-[calc(100vh-52px)]" : "mx-auto max-w-7xl px-4 py-8"}
+          className={isProjectWorkspace ? "w-full min-h-[calc(100vh-48px)]" : "mx-auto max-w-7xl px-4 py-8"}
           style={{ color: 'var(--lh-text)' }}
         >
           <PlanContext.Provider value={planId}>{children}</PlanContext.Provider>
@@ -1664,7 +1710,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Floating Ask AI Button & Panel */}
       <button className="lh-ai" onClick={() => setAiOpen(true)}>
-        <Sparkles size={15} />
+        <Sparkles size={14} />
         <span>Ask AI</span>
       </button>
       <AskAiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
