@@ -3,8 +3,9 @@ import {
   House, LayoutDashboard, FolderGit2, ListFilter, Workflow, Rocket,
   Bug, FileText, ClipboardCheck, Zap, Server, Layers, Plug, Activity,
   FileWarning, BarChart3, ShieldCheck, Scale, ScrollText, Building2,
-  Boxes, BookOpen, Settings, Users, Gauge, CreditCard
+  Boxes, BookOpen, Settings, Users, Gauge, CreditCard, Compass, Code2
 } from 'lucide-react'
+
 
 export type FacetVariant = 'default' | 'danger' | 'warning' | 'success' | 'info' | 'purple'
 
@@ -168,63 +169,83 @@ export const NAV_SEARCH_EXTRA: NavItem[] = [
   { label: 'Chaos Engineering', to: '/chaos', icon: Zap, description: 'Fault injection & resilience simulations', keywords: ['resilience', 'fault', 'failure', 'chaos'] },
 ]
 
-// Grouped sections for structured layouts or drawers
-export const NAV_SECTIONS: NavSection[] = [
+// Spacelift-exact 6 Core Capability Categories
+export interface SpaceliftSection {
+  id: string
+  title: string
+  icon: LucideIcon
+  items: NavItem[]
+}
+
+export const SPACELIFT_SECTIONS: SpaceliftSection[] = [
   {
-    key: 'core',
-    label: 'Platform',
-    icon: Boxes,
+    id: 'insights',
+    title: 'Get Insights',
+    icon: Compass,
     items: [
-      NAV_PRIMARY[0], // Overview
-      NAV_PRIMARY[1], // Projects
-      NAV_PRIMARY[2], // Runs
-      { label: 'Workspaces', to: '/workspaces', icon: Building2 },
-      { label: 'Stacks', to: '/stacks', icon: Layers },
+      { label: 'Overview', to: '/dashboard', icon: House, description: 'Release readiness & workspace overview' },
+      NAV_PRIMARY[1], // Runs (with facets)
+      NAV_PRIMARY[3], // Findings (with facets)
+      { label: 'Analytics', to: '/analytics', icon: Activity, description: 'Engineering & release telemetry' },
+      { label: 'Executive View', to: '/executive', icon: BarChart3, description: 'Leadership KPI dashboard' },
     ]
   },
   {
-    key: 'delivery',
-    label: 'Delivery & Testing',
+    id: 'ship',
+    title: 'Ship Infra',
     icon: Rocket,
     items: [
-      NAV_PRIMARY[3], // Pipelines
-      NAV_PRIMARY[4], // Deployments
-      { label: 'Simulator', to: '/simulator', icon: Zap },
-      { label: 'Server Validation', to: '/server-validation', icon: Server },
-      { label: 'Environment Validation', to: '/environment', icon: Server },
+      NAV_PRIMARY[2], // Pipelines (with facets)
+      { label: 'Deployments', to: '/deployments', icon: Rocket, description: 'Active and past releases' },
+      { label: 'Simulator', to: '/simulator', icon: Zap, description: 'Blast radius simulation' },
+      { label: 'Server Validation', to: '/server-validation', icon: Server, description: 'Server infrastructure checks' },
+      { label: 'Environment Validation', to: '/environment', icon: Server, description: 'Stage & production readiness' },
     ]
   },
   {
-    key: 'operations',
-    label: 'Operations & Insights',
-    icon: Activity,
+    id: 'code',
+    title: 'Share Code & Config',
+    icon: Code2,
     items: [
-      NAV_PRIMARY[5], // Findings
-      { label: 'Analytics', to: '/analytics', icon: Activity },
-      { label: 'Executive View', to: '/executive', icon: BarChart3 },
-      { label: 'Incidents', to: '/incidents', icon: FileWarning },
+      NAV_PRIMARY[0], // Projects (with facets)
+      { label: 'Stacks', to: '/stacks', icon: Layers, description: 'Multi-service dependency stacks' },
     ]
   },
   {
-    key: 'governance',
-    label: 'Governance & Security',
+    id: 'guardrails',
+    title: 'Enforce Guardrails',
     icon: ShieldCheck,
     items: [
-      NAV_PRIMARY[6], // Change Management
-      NAV_PRIMARY[7], // Approvals
-      { label: 'Policy Studio', to: '/policies', icon: ShieldCheck },
-      { label: 'Compliance', to: '/compliance', icon: Scale },
-      { label: 'Audit Log', to: '/audit', icon: ScrollText },
+      { label: 'Policy Studio', to: '/policies', icon: ShieldCheck, description: 'Release guardrails & policies' },
+      NAV_PRIMARY[4], // Change Management (with facets)
+      { label: 'Approvals', to: '/approvals', icon: ClipboardCheck, description: 'Pending gatekeeper reviews' },
+      { label: 'Compliance', to: '/compliance', icon: Scale, description: 'Regulatory frameworks & reports' },
+      { label: 'Audit Log', to: '/audit', icon: ScrollText, description: 'Immutable audit trails' },
     ]
   },
   {
-    key: 'ecosystem',
-    label: 'Ecosystem & Docs',
+    id: 'services',
+    title: 'Integrate Services',
     icon: Plug,
     items: [
-      { label: 'Integrations', to: '/integrations', icon: Plug },
-      { label: 'Plugins', to: '/plugins', icon: Boxes },
-      { label: 'Documentation', to: '/docs', icon: BookOpen },
+      { label: 'Integrations', to: '/integrations', icon: Plug, description: 'Connected tools & webhooks' },
+      { label: 'Plugins', to: '/plugins', icon: Boxes, description: 'Extensions marketplace' },
+      { label: 'API Testing', to: '/api-testing', icon: Plug, description: 'Automated contract testing' },
+      { label: 'Load & Chaos Testing', to: '/load-testing', icon: Activity, description: 'Stress & resilience testing' },
+      { label: 'Incidents', to: '/incidents', icon: FileWarning, description: 'Incident response' },
+    ]
+  },
+  {
+    id: 'organization',
+    title: 'Manage Organization',
+    icon: Users,
+    items: [
+      { label: 'Workspaces', to: '/workspaces', icon: Building2, description: 'All team workspaces' },
+      { label: 'Organizations', to: '/organizations', icon: Building2, description: 'Manage organizations' },
+      { label: 'Team & Members', to: '/team', icon: Users, description: 'Role-based access & invites' },
+      { label: 'Usage & Quotas', to: '/usage', icon: Gauge, description: 'Compute & storage limits' },
+      { label: 'Plans & Billing', to: '/plans', icon: CreditCard, description: 'Subscription & invoices' },
+      { label: 'Settings', to: '/settings', icon: Settings, description: 'Workspace preferences' },
     ]
   }
 ]
@@ -236,6 +257,7 @@ export const ALL_NAV_ITEMS: NavItem[] = [
   ...NAV_ACCOUNT,
   ...NAV_SEARCH_EXTRA,
 ].filter((item, index, self) => index === self.findIndex((t) => t.to === item.to))
+
 
 // Route -> Human-readable Page Title
 export const PAGE_TITLES: Record<string, string> = {
