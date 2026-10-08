@@ -1091,40 +1091,63 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { path, search, fullPath, navigate } = useRouter()
   const { user, profile, signOut } = useAuth()
 
-  const [activeWs, setActiveWs] = useState<Workspace | null>(null)
-  const [wsList, setWsList] = useState<Workspace[]>([])
-  const [orgList, setOrgList] = useState<Organization[]>([])
-  const [activeOrg, setActiveOrg] = useState<Organization | null>(null)
-  const [wsMenuOpen, setWsMenuOpen] = useState(false)
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [pinnedOpen, setPinnedOpen] = useState(true)
-  const [modal, setModal] = useState<null | 'org' | 'ws'>(null)
-  const [modalName, setModalName] = useState('')
-  const [modalBusy, setModalBusy] = useState(false)
-  const [plan, setPlan] = useState<WorkspacePlan | null>(null)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [paletteOpen, setPaletteOpen] = useState(false)
-  const [aiOpen, setAiOpen] = useState(false)
+  const [activeWs, setActiveWs] = useState<Workspace | null>(() => {
+    try {
+      const savedId = localStorage.getItem('sandbox.activeWs');
+      const savedName = localStorage.getItem('sandbox.activeWsName');
+      if (savedId && savedName) return { id: savedId, name: savedName } as Workspace;
+    } catch {}
+    return null;
+  });
+  const [activeRunsCount, setActiveRunsCount] = useState<number>(0);
+  const [wsList, setWsList] = useState<Workspace[]>([]);
+  const [orgList, setOrgList] = useState<Organization[]>([]);
+  const [activeOrg, setActiveOrg] = useState<Organization | null>(null);
+  const [wsMenuOpen, setWsMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [pinnedOpen, setPinnedOpen] = useState(true);
+  const [modal, setModal] = useState<null | 'org' | 'ws'>(null);
+  const [modalName, setModalName] = useState('');
+  const [modalBusy, setModalBusy] = useState(false);
+  const [plan, setPlan] = useState<WorkspacePlan | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
 
   // Manage open Spacelift capability accordion sections (persisted to localStorage)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_EXPANDED_KEY)
-      if (saved) return JSON.parse(saved)
+      const saved = localStorage.getItem(STORAGE_EXPANDED_KEY);
+      if (saved) return JSON.parse(saved);
     } catch {}
     const initial: Record<string, boolean> = {
       insights: true // default open top section like Spacelift Launchpad
-    }
+    };
     SPACELIFT_SECTIONS.forEach(sec => {
       if (sec.items.some(i => isPathActive(path, i.to))) {
-        initial[sec.id] = true
+        initial[sec.id] = true;
       }
-    })
-    return initial
-  })
+    });
+    return initial;
+  });
 
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('lh.theme') as any) || 'light')
-  const pins = usePins()
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => (localStorage.getItem('lh.theme') as any) || 'light');
+  const pins = usePins();
+
+  // Fetch live active runs count
+  useEffect(() => {
+    if (!activeWs) return;
+    ;(async () => {
+      try {
+        const { count } = await supabase
+          .from('validations')
+          .select('*', { count: 'exact', head: true })
+          .eq('workspace_id', activeWs.id)
+          .in('status', ['running', 'in_progress', 'queued']);
+        setActiveRunsCount(count || 0);
+      } catch {}
+    })();
+  }, [activeWs]);
 
   // Save expanded states
   const toggleSection = (sectionId: string) => {
@@ -1132,76 +1155,77 @@ export function AppShell({ children }: { children: ReactNode }) {
       const updated = {
         ...prev,
         [sectionId]: !prev[sectionId]
-      }
+      };
       try {
-        localStorage.setItem(STORAGE_EXPANDED_KEY, JSON.stringify(updated))
+        localStorage.setItem(STORAGE_EXPANDED_KEY, JSON.stringify(updated));
       } catch {}
-      return updated
-    })
-  }
+      return updated;
+    });
+  };
 
   // Auto-expand section when navigated into
   useEffect(() => {
     SPACELIFT_SECTIONS.forEach(sec => {
       if (sec.items.some(i => isPathActive(path, i.to))) {
         setOpenSections(prev => {
-          if (prev[sec.id]) return prev
-          const updated = { ...prev, [sec.id]: true }
-          try { localStorage.setItem(STORAGE_EXPANDED_KEY, JSON.stringify(updated)) } catch {}
-          return updated
-        })
+          if (prev[sec.id]) return prev;
+          const updated = { ...prev, [sec.id]: true };
+          try { localStorage.setItem(STORAGE_EXPANDED_KEY, JSON.stringify(updated)); } catch {}
+          return updated;
+        });
       }
-    })
-  }, [path])
+    });
+  }, [path]);
 
   useEffect(() => {
     const f = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        setPaletteOpen(v => !v)
+        e.preventDefault();
+        setPaletteOpen(v => !v);
       }
-    }
-    window.addEventListener('keydown', f)
-    return () => window.removeEventListener('keydown', f)
-  }, [])
+    };
+    window.addEventListener('keydown', f);
+    return () => window.removeEventListener('keydown', f);
+  }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-    localStorage.setItem('lh.theme', theme)
-  }, [theme])
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('lh.theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     ;(async () => {
-      let orgs: Organization[] = []
+      let orgs: Organization[] = [];
       try {
-        const { data } = await supabase.from('organizations').select('*').order('created_at')
-        orgs = data || []
+        const { data } = await supabase.from('organizations').select('*').order('created_at');
+        orgs = data || [];
       } catch {}
-      let cur: Organization | null = null
+      let cur: Organization | null = null;
       if (orgs.length) {
-        setOrgList(orgs)
-        const saved = localStorage.getItem('sandbox.activeOrg')
-        cur = orgs.find(o => o.id === saved) ?? orgs[0]
-        setActiveOrg(cur)
-        localStorage.setItem('sandbox.activeOrg', cur.id)
+        setOrgList(orgs);
+        const saved = localStorage.getItem('sandbox.activeOrg');
+        cur = orgs.find(o => o.id === saved) ?? orgs[0];
+        setActiveOrg(cur);
+        localStorage.setItem('sandbox.activeOrg', cur.id);
       }
-      const { data: ws } = await supabase.from('workspaces').select('*').order('created_at')
-      if (!ws?.length) return
-      setWsList(ws)
-      const list = cur ? (ws.filter(w => !w.organization_id || w.organization_id === cur.id) || ws) : ws
-      const active = list.find(w => w.id === localStorage.getItem('sandbox.activeWs')) ?? list[0]
-      setActiveWs(active)
-      localStorage.setItem('sandbox.activeWs', active.id)
-    })()
-  }, [])
+      const { data: ws } = await supabase.from('workspaces').select('*').order('created_at');
+      if (!ws?.length) return;
+      setWsList(ws);
+      const list = cur ? (ws.filter(w => !w.organization_id || w.organization_id === cur.id) || ws) : ws;
+      const active = list.find(w => w.id === localStorage.getItem('sandbox.activeWs')) ?? list[0];
+      setActiveWs(active);
+      localStorage.setItem('sandbox.activeWs', active.id);
+      localStorage.setItem('sandbox.activeWsName', active.name);
+    })();
+  }, []);
 
   useEffect(() => {
     if (activeWs) {
       supabase.from('workspace_plans').select('*').eq('workspace_id', activeWs.id).order('created_at', { ascending: false }).limit(1)
-        .then(({ data }) => data?.[0] && setPlan(data[0]))
+        .then(({ data }) => data?.[0] && setPlan(data[0]));
     }
-  }, [activeWs])
+  }, [activeWs]);
 
   const planId = (plan?.plan_id as PlanId) ?? 'free'
   const planInfo = PLANS[planId] || { name: 'Free Plan' }
@@ -1357,7 +1381,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             className={`lh-space-wsbtn ${wsMenuOpen ? 'open' : ''}`}
             onClick={() => { setUserMenuOpen(false); setWsMenuOpen(v => !v) }}
           >
-            <span className="ws-name">{activeWs?.name || 'Deploy'}</span>
+            <span className="ws-name">{activeWs?.name || 'My Workspace'}</span>
             <ChevronDown size={13} className="ws-chev" />
           </button>
         </div>
@@ -1369,10 +1393,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           <button
             type="button"
             className="lh-space-badgebtn"
-            title="Active runs"
+            title={activeRunsCount > 0 ? `${activeRunsCount} active runs` : 'Active runs (0)'}
             onClick={() => navigate('/runs')}
           >
-            <span>+0</span>
+            <Activity size={10} style={{ color: activeRunsCount > 0 ? '#10b981' : 'var(--lh-text3)' }} />
+            <span>+{activeRunsCount}</span>
           </button>
         </div>
 
