@@ -1,0 +1,313 @@
+import type { LucideIcon } from 'lucide-react'
+import {
+  House, LayoutDashboard, FolderGit2, ListFilter, Workflow, Rocket,
+  Bug, FileText, ClipboardCheck, Zap, Server, Layers, Plug, Activity,
+  FileWarning, BarChart3, ShieldCheck, Scale, ScrollText, Building2,
+  Boxes, BookOpen, Settings, Users, Gauge, CreditCard, Compass, Code2
+} from 'lucide-react'
+
+export type FacetVariant = 'default' | 'danger' | 'warning' | 'success' | 'info' | 'purple'
+
+export interface NavFacet {
+  id: string
+  label: string
+  to: string
+  badge?: string
+  badgeVariant?: FacetVariant
+  filterParam?: { key: string; value: string }
+  dotColor?: string
+}
+
+export interface NavItem {
+  label: string
+  to: string
+  icon: LucideIcon
+  description?: string
+  keywords?: string[]
+  badge?: string
+  badgeVariant?: FacetVariant
+  facets?: NavFacet[]
+}
+
+export interface NavSection {
+  key: string
+  label: string
+  icon?: LucideIcon
+  items: NavItem[]
+}
+
+// Global quick-filter facet shortcuts for one-click triage
+export const GLOBAL_FACET_QUICK_FILTERS: { id: string; label: string; to: string; countKey?: string; dotColor: string }[] = [
+  { id: 'critical-findings', label: 'Critical Issues', to: '/findings?sev=critical', dotColor: '#ef4444' },
+  { id: 'failed-runs', label: 'Failed Runs', to: '/runs?status=failed', dotColor: '#f97316' },
+  { id: 'pending-approvals', label: 'Pending Approvals', to: '/approvals', dotColor: '#eab308' },
+  { id: 'validated-repos', label: 'Validated Repos', to: '/projects?status=validated', dotColor: '#10b981' },
+]
+
+// Reusable individual navigation items with facets
+export const NAV_PROJECTS: NavItem = {
+  label: 'Projects',
+  to: '/projects',
+  icon: FolderGit2,
+  description: 'Connected repositories & services',
+  keywords: ['repositories', 'repos', 'apps', 'services', 'code'],
+  facets: [
+    { id: 'all-projects', label: 'All Projects', to: '/projects' },
+    { id: 'proj-validated', label: 'Validated', to: '/projects?status=validated', badge: 'Active', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'validated' } },
+    { id: 'proj-pending', label: 'Needs Validation', to: '/projects?status=not_validated', badge: 'Pending', badgeVariant: 'warning', dotColor: '#f59e0b', filterParam: { key: 'status', value: 'not_validated' } },
+    { id: 'proj-github', label: 'GitHub Repos', to: '/projects?provider=github', dotColor: '#818cf8', filterParam: { key: 'provider', value: 'github' } },
+    { id: 'proj-gitlab', label: 'GitLab Repos', to: '/projects?provider=gitlab', dotColor: '#f97316', filterParam: { key: 'provider', value: 'gitlab' } },
+  ]
+}
+
+export const NAV_RUNS: NavItem = {
+  label: 'Runs',
+  to: '/runs',
+  icon: ListFilter,
+  description: 'Analysis & validation runs history',
+  keywords: ['jobs', 'executions', 'history', 'builds', 'analysis'],
+  facets: [
+    { id: 'all-runs', label: 'All Runs', to: '/runs' },
+    { id: 'run-failed', label: 'Failed Runs', to: '/runs?status=failed', badge: 'Alert', badgeVariant: 'danger', dotColor: '#ef4444', filterParam: { key: 'status', value: 'failed' } },
+    { id: 'run-running', label: 'In Progress', to: '/runs?status=running', badge: 'Live', badgeVariant: 'info', dotColor: '#38bdf8', filterParam: { key: 'status', value: 'running' } },
+    { id: 'run-completed', label: 'Completed', to: '/runs?status=completed', badge: 'Passed', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'completed' } },
+  ]
+}
+
+export const NAV_PIPELINES: NavItem = {
+  label: 'Pipelines',
+  to: '/pipeline',
+  icon: Workflow,
+  description: 'Release orchestration pipelines',
+  keywords: ['workflows', 'ci', 'cd', 'stages', 'automation'],
+  facets: [
+    { id: 'all-pipelines', label: 'Release Pipeline', to: '/pipeline' },
+    { id: 'pipeline-sim', label: 'Simulator', to: '/simulator', dotColor: '#a855f7' },
+    { id: 'pipeline-env', label: 'Environment Checks', to: '/environment', dotColor: '#06b6d4' },
+  ]
+}
+
+export const NAV_FINDINGS: NavItem = {
+  label: 'Findings',
+  to: '/findings',
+  icon: Bug,
+  description: 'Security, bug & quality issues',
+  keywords: ['bugs', 'vulnerabilities', 'issues', 'risks', 'cve'],
+  facets: [
+    { id: 'all-findings', label: 'All Findings', to: '/findings' },
+    { id: 'finding-crit', label: 'Critical Severity', to: '/findings?sev=critical', badge: 'Critical', badgeVariant: 'danger', dotColor: '#ef4444', filterParam: { key: 'sev', value: 'critical' } },
+    { id: 'finding-high', label: 'High Severity', to: '/findings?sev=high', badge: 'High', badgeVariant: 'warning', dotColor: '#f97316', filterParam: { key: 'sev', value: 'high' } },
+    { id: 'finding-open', label: 'Open Issues', to: '/findings?status=open', dotColor: '#6366f1', filterParam: { key: 'status', value: 'open' } },
+    { id: 'finding-resolved', label: 'Resolved', to: '/findings?status=resolved', badge: 'Fixed', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'resolved' } },
+  ]
+}
+
+export const NAV_CHANGE_MANAGEMENT: NavItem = {
+  label: 'Change Management',
+  to: '/change-management',
+  icon: FileText,
+  description: 'Change requests & risk analysis',
+  keywords: ['cr', 'rfc', 'tickets', 'changes'],
+  facets: [
+    { id: 'all-cr', label: 'All Change Requests', to: '/change-management' },
+    { id: 'cr-approvals', label: 'Pending Approvals', to: '/approvals', badge: 'Review', badgeVariant: 'warning', dotColor: '#eab308' },
+  ]
+}
+
+// Core primary navigation items
+export const NAV_PRIMARY: NavItem[] = [
+  {
+    label: 'Overview',
+    to: '/dashboard',
+    icon: House,
+    description: 'Release readiness & workspace overview',
+    keywords: ['home', 'dashboard', 'summary', 'overview']
+  },
+  NAV_PROJECTS,
+  NAV_RUNS,
+  NAV_PIPELINES,
+  {
+    label: 'Deployments',
+    to: '/deployments',
+    icon: Rocket,
+    description: 'Active and past releases',
+    keywords: ['release', 'publish', 'rollout', 'targets'],
+  },
+  NAV_FINDINGS,
+  NAV_CHANGE_MANAGEMENT,
+  {
+    label: 'Approvals',
+    to: '/approvals',
+    icon: ClipboardCheck,
+    description: 'Pending gatekeeper sign-offs',
+    keywords: ['gates', 'reviews', 'signoff', 'decisions']
+  },
+]
+
+// Secondary / Deep capability items
+export const NAV_MORE: NavItem[] = [
+  { label: 'Analytics', to: '/analytics', icon: Activity, description: 'Engineering & release telemetry', keywords: ['metrics', 'charts', 'telemetry', 'stats', 'dora'] },
+  { label: 'Executive View', to: '/executive', icon: BarChart3, description: 'Leadership KPI dashboard', keywords: ['leadership', 'portfolio', 'exec', 'health'] },
+  { label: 'Simulator', to: '/simulator', icon: Zap, description: 'Pre-flight release blast radius simulation', keywords: ['blast radius', 'dry run', 'what if', 'preview'] },
+  { label: 'Server Validation', to: '/server-validation', icon: Server, description: 'Infrastructure & server verification', keywords: ['servers', 'infra', 'nodes', 'hosts'] },
+  { label: 'Environment Validation', to: '/environment', icon: Server, description: 'Stage & production readiness checks', keywords: ['env', 'staging', 'production', 'drift'] },
+  { label: 'Stacks', to: '/stacks', icon: Layers, description: 'Multi-service dependency stacks', keywords: ['topology', 'services', 'architecture'] },
+  { label: 'Policy Studio', to: '/policies', icon: ShieldCheck, description: 'Governance & compliance rules', keywords: ['rules', 'guardrails', 'checks', 'policy'] },
+  { label: 'Compliance', to: '/compliance', icon: Scale, description: 'Regulatory frameworks & reports', keywords: ['soc2', 'hipaa', 'gdpr', 'standards'] },
+  { label: 'Incidents', to: '/incidents', icon: FileWarning, description: 'Active disruptions & postmortems', keywords: ['outages', 'alerts', 'sev1', 'oncall'] },
+  { label: 'Integrations', to: '/integrations', icon: Plug, description: 'Connected tools & webhooks', keywords: ['github', 'slack', 'jira', 'datadog', 'gitlab'] },
+  { label: 'Plugins', to: '/plugins', icon: Boxes, description: 'Custom extensions and marketplace', keywords: ['extensions', 'addons', 'marketplace'] },
+  { label: 'Audit Log', to: '/audit', icon: ScrollText, description: 'Immutable action trail', keywords: ['history', 'security log', 'compliance log'] },
+  { label: 'Documentation', to: '/docs', icon: BookOpen, description: 'Guides, API reference & specs', keywords: ['help', 'manual', 'api docs', 'guide'] },
+]
+
+// Account & Organization management items
+export const NAV_ACCOUNT: NavItem[] = [
+  { label: 'Settings', to: '/settings', icon: Settings, description: 'Account & workspace preferences', keywords: ['profile', 'config', 'preferences'] },
+  { label: 'Organizations', to: '/organizations', icon: Building2, description: 'Manage organizations', keywords: ['org', 'company', 'enterprise'] },
+  { label: 'Workspaces', to: '/workspaces', icon: Building2, description: 'All team workspaces', keywords: ['spaces', 'groups', 'teams'] },
+  { label: 'Team & Members', to: '/team', icon: Users, description: 'Role-based access & invites', keywords: ['members', 'roles', 'permissions', 'users', 'rbac'] },
+  { label: 'Usage & Quotas', to: '/usage', icon: Gauge, description: 'Compute, run minutes & storage', keywords: ['limits', 'consumption', 'metrics', 'quota'] },
+  { label: 'Plans & Billing', to: '/plans', icon: CreditCard, description: 'Subscription & invoices', keywords: ['upgrade', 'pricing', 'subscription', 'invoice', 'payment'] },
+]
+
+// Extra routes accessible through search or direct navigation
+export const NAV_SEARCH_EXTRA: NavItem[] = [
+  { label: 'API Testing', to: '/api-testing', icon: Plug, description: 'Automated contract & endpoint testing', keywords: ['api', 'rest', 'endpoints', 'contract'] },
+  { label: 'Load Testing', to: '/load-testing', icon: Activity, description: 'Stress testing & capacity validation', keywords: ['performance', 'stress', 'throughput', 'load'] },
+  { label: 'Chaos Engineering', to: '/chaos', icon: Zap, description: 'Fault injection & resilience simulations', keywords: ['resilience', 'fault', 'failure', 'chaos'] },
+]
+
+export interface SpaceliftSection {
+  id: string
+  title: string
+  icon: LucideIcon
+  items: NavItem[]
+}
+
+// Spacelift 6 Core Capability Categories with clean, distinct, intuitive items
+export const SPACELIFT_SECTIONS: SpaceliftSection[] = [
+  {
+    id: 'insights',
+    title: 'Get Insights',
+    icon: Compass,
+    items: [
+      { label: 'Overview', to: '/dashboard', icon: House, description: 'Release readiness & workspace overview' },
+      NAV_RUNS,
+      NAV_FINDINGS,
+      { label: 'Analytics', to: '/analytics', icon: Activity, description: 'Engineering & release telemetry' },
+      { label: 'Executive View', to: '/executive', icon: BarChart3, description: 'Leadership KPI dashboard' },
+    ]
+  },
+  {
+    id: 'ship',
+    title: 'Ship Infra',
+    icon: Rocket,
+    items: [
+      NAV_PIPELINES,
+      { label: 'Deployments', to: '/deployments', icon: Rocket, description: 'Active and past releases' },
+      { label: 'Simulator', to: '/simulator', icon: Zap, description: 'Blast radius simulation' },
+      { label: 'Server Validation', to: '/server-validation', icon: Server, description: 'Server infrastructure checks' },
+      { label: 'Environment Validation', to: '/environment', icon: Server, description: 'Stage & production readiness' },
+    ]
+  },
+  {
+    id: 'code',
+    title: 'Share Code & Config',
+    icon: Code2,
+    items: [
+      NAV_PROJECTS,
+      { label: 'Stacks', to: '/stacks', icon: Layers, description: 'Multi-service dependency stacks' },
+    ]
+  },
+  {
+    id: 'guardrails',
+    title: 'Enforce Guardrails',
+    icon: ShieldCheck,
+    items: [
+      { label: 'Policy Studio', to: '/policies', icon: ShieldCheck, description: 'Release guardrails & policies' },
+      NAV_CHANGE_MANAGEMENT,
+      { label: 'Approvals', to: '/approvals', icon: ClipboardCheck, description: 'Pending gatekeeper reviews' },
+      { label: 'Compliance', to: '/compliance', icon: Scale, description: 'Regulatory frameworks & reports' },
+      { label: 'Audit Log', to: '/audit', icon: ScrollText, description: 'Immutable audit trails' },
+    ]
+  },
+  {
+    id: 'services',
+    title: 'Integrate Services',
+    icon: Plug,
+    items: [
+      { label: 'Integrations', to: '/integrations', icon: Plug, description: 'Connected tools & webhooks' },
+      { label: 'Plugins', to: '/plugins', icon: Boxes, description: 'Extensions marketplace' },
+      { label: 'API Testing', to: '/api-testing', icon: Plug, description: 'Automated contract testing' },
+      { label: 'Load & Chaos Testing', to: '/load-testing', icon: Activity, description: 'Stress & resilience testing' },
+      { label: 'Incidents', to: '/incidents', icon: FileWarning, description: 'Incident response' },
+    ]
+  },
+  {
+    id: 'organization',
+    title: 'Manage Organization',
+    icon: Users,
+    items: [
+      { label: 'Workspaces', to: '/workspaces', icon: Building2, description: 'All team workspaces' },
+      { label: 'Organizations', to: '/organizations', icon: Building2, description: 'Manage organizations' },
+      { label: 'Team & Members', to: '/team', icon: Users, description: 'Role-based access & invites' },
+      { label: 'Usage & Quotas', to: '/usage', icon: Gauge, description: 'Compute & storage limits' },
+      { label: 'Plans & Billing', to: '/plans', icon: CreditCard, description: 'Subscription & invoices' },
+      { label: 'Settings', to: '/settings', icon: Settings, description: 'Workspace preferences' },
+    ]
+  }
+]
+
+// Flat lookup for all navigable items
+export const ALL_NAV_ITEMS: NavItem[] = [
+  ...NAV_PRIMARY,
+  ...NAV_MORE,
+  ...NAV_ACCOUNT,
+  ...NAV_SEARCH_EXTRA,
+].filter((item, index, self) => index === self.findIndex((t) => t.to === item.to))
+
+// Route -> Human-readable Page Title
+export const PAGE_TITLES: Record<string, string> = {
+  '/dashboard': 'Overview',
+  '/projects': 'Projects',
+  '/runs': 'Runs',
+  '/pipeline': 'Release Pipelines',
+  '/deployments': 'Deployments',
+  '/simulator': 'Deployment Simulator',
+  '/findings': 'Findings & Issues',
+  '/change-management': 'Change Management',
+  '/approvals': 'Approvals',
+  '/analytics': 'Analytics',
+  '/executive': 'Executive View',
+  '/server-validation': 'Server Validation',
+  '/environment': 'Environment Validation',
+  '/stacks': 'Stacks',
+  '/policies': 'Policy Studio',
+  '/compliance': 'Compliance',
+  '/incidents': 'Incidents',
+  '/integrations': 'Integrations',
+  '/plugins': 'Plugins',
+  '/audit': 'Audit Log',
+  '/workspaces': 'Workspaces',
+  '/organizations': 'Organizations',
+  '/team': 'Team & Members',
+  '/usage': 'Usage & Quotas',
+  '/plans': 'Plans & Pricing',
+  '/settings': 'Settings',
+  '/docs': 'Documentation',
+  '/api-testing': 'API Testing',
+  '/load-testing': 'Load Testing',
+  '/chaos': 'Chaos Engineering',
+}
+
+// Nav filter matching helper
+export function navMatches(item: NavItem, query: string): boolean {
+  if (!query || !query.trim()) return true
+  const q = query.toLowerCase().trim()
+  if (item.label.toLowerCase().includes(q)) return true
+  if (item.to.toLowerCase().includes(q)) return true
+  if (item.description && item.description.toLowerCase().includes(q)) return true
+  if (item.keywords && item.keywords.some((k) => k.toLowerCase().includes(q))) return true
+  return false
+}

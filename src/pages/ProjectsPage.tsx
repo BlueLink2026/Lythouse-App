@@ -26,9 +26,22 @@ function Choice({selected,label,sub,onClick}:{selected?:boolean;label:string;sub
 
 export function ProjectsPage(){
  const planId=usePlanId();
- const[loading,setLoading]=useState(true),[projects,setProjects]=useState<any[]>([]),[wid,setWid]=useState(''),[q,setQ]=useState(''),[projectFilter,setProjectFilter]=useState('all'),[providerFilter,setProviderFilter]=useState<'all'|Provider>('all'),[statusFilter,setStatusFilter]=useState('all'),[dateFilter,setDateFilter]=useState('all'),[creatorFilter,setCreatorFilter]=useState('all'),[sort,setSort]=useState('created_desc');
+ const[loading,setLoading]=useState(true),[projects,setProjects]=useState<any[]>([]),[wid,setWid]=useState(''),[q,setQ]=useState(''),[projectFilter,setProjectFilter]=useState('all'),[providerFilter,setProviderFilter]=useState<'all'|Provider>(()=>(new URLSearchParams(window.location.search).get('provider') as any)||'all'),[statusFilter,setStatusFilter]=useState(()=>new URLSearchParams(window.location.search).get('status')||'all'),[dateFilter,setDateFilter]=useState('all'),[creatorFilter,setCreatorFilter]=useState('all'),[sort,setSort]=useState('created_desc');
  const[filterOpen,setFilterOpen]=useState(false),[field,setField]=useState<Field|null>(null),[operatorOpen,setOperatorOpen]=useState<Field|null>(null),[operators,setOperators]=useState<Partial<Record<Field,Operator>>>({}),[valueSearch,setValueSearch]=useState('');
  const[modal,setModal]=useState(false),[saving,setSaving]=useState<Provider|null>(null),[error,setError]=useState(''),[deleteProject,setDeleteProject]=useState<Project|null>(null),[deleteText,setDeleteText]=useState(''),[deleting,setDeleting]=useState(false),[repos,setRepos]=useState<GitRepo[]>([]),[repoModal,setRepoModal]=useState(false),[repoLoading,setRepoLoading]=useState(false),[importing,setImporting]=useState<number|null>(null),[installationId,setInstallationId]=useState(''),[githubState,setGithubState]=useState('');
+
+ useEffect(()=>{
+  const syncFromUrl=()=>{
+    const p=new URLSearchParams(window.location.search);
+    if(p.has('status'))setStatusFilter(p.get('status')||'all');
+    if(p.has('provider'))setProviderFilter((p.get('provider') as any)||'all');
+    if(p.has('q'))setQ(p.get('q')||'');
+  };
+  syncFromUrl();
+  window.addEventListener('popstate',syncFromUrl);
+  return()=>window.removeEventListener('popstate',syncFromUrl);
+ },[]);
+
  const limit=PLAN_LIMITS[planId]?.projects??null,atLimit=limit!=null&&projects.length>=limit;
  const opFor=(f:Field):Operator=>operators[f]||'=';
  const applyOp=(match:boolean,f:Field)=>opFor(f)==='!='?!match:match;

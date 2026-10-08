@@ -9,7 +9,7 @@
 import { useEffect, useState } from 'react'
 import { Pin } from 'lucide-react'
 
-export type PinType = 'workspace' | 'project' | 'finding' | 'stack' | 'environment'
+export type PinType = 'workspace' | 'project' | 'finding' | 'stack' | 'environment' | 'nav'
 export interface PinItem {
   type: PinType
   id: string
@@ -71,18 +71,19 @@ function ensureStyles() {
   const el = document.createElement('style')
   el.id = 'lh-pin-styles'
   el.textContent = `
-  .lh-pin{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;border:1px solid transparent;background:transparent;color:#9aa0b4;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:transform .15s cubic-bezier(.2,.8,.2,1),color .15s,background .15s,border-color .15s}
-  .lh-pin:hover{background:rgba(124,92,230,.10);color:#7c5ce6;border-color:rgba(124,92,230,.22)}
-  .lh-pin:active{transform:scale(.86)}
-  .lh-pin:focus-visible{outline:2px solid rgba(124,92,230,.5);outline-offset:1px}
-  .lh-pin svg{transition:transform .18s cubic-bezier(.2,.8,.2,1)}
-  .lh-pin.on{color:#7c5ce6}
-  .lh-pin.on svg{fill:#7c5ce6;transform:rotate(-32deg)}
-  .lh-pin.on:hover{background:rgba(124,92,230,.14)}
+  .lh-pin{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--lh-text3,#94a3b8);cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:transform .22s cubic-bezier(.16,1,.3,1),color .15s,background .15s,border-color .15s}
+  .lh-pin:hover{background:rgba(15,23,42,.07);color:#0f172a;border-color:rgba(15,23,42,.08)}
+  .lh-pin:active{transform:scale(.82) rotate(-15deg)}
+  .lh-pin:focus-visible{outline:2px solid rgba(15,23,42,.2);outline-offset:1px}
+  .lh-pin svg{transform:rotate(-30deg);transition:transform .25s cubic-bezier(.34,1.56,.64,1),fill .15s}
+  .lh-pin.on{color:#0f172a;background:rgba(15,23,42,.05);border-color:rgba(15,23,42,.08);animation:lh-pin-pop .36s cubic-bezier(.175,.885,.32,1.275)}
+  .lh-pin.on svg{fill:#0f172a;transform:rotate(-45deg) scale(1.08)}
+  .lh-pin.on:hover{background:rgba(15,23,42,.09)}
   :root[data-theme="dark"] .lh-pin,.dark .lh-pin{color:#8b8ba3}
-  :root[data-theme="dark"] .lh-pin:hover,.dark .lh-pin:hover{color:#c4b5fd;background:rgba(167,139,250,.14);border-color:rgba(167,139,250,.30)}
-  :root[data-theme="dark"] .lh-pin.on,.dark .lh-pin.on{color:#a78bfa}
-  :root[data-theme="dark"] .lh-pin.on svg,.dark .lh-pin.on svg{fill:#a78bfa}
+  :root[data-theme="dark"] .lh-pin:hover,.dark .lh-pin:hover{color:#ffffff;background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.12)}
+  :root[data-theme="dark"] .lh-pin.on,.dark .lh-pin.on{color:#ffffff;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+  :root[data-theme="dark"] .lh-pin.on svg,.dark .lh-pin.on svg{fill:#ffffff}
+  @keyframes lh-pin-pop{0%{transform:scale(.72) rotate(-20deg)}60%{transform:scale(1.18) rotate(-50deg)}100%{transform:scale(1) rotate(0deg)}}
   `
   document.head.appendChild(el)
 }
