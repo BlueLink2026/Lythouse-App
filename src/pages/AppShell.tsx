@@ -593,47 +593,93 @@ const CSS = `
   color: var(--lh-accent);
 }
 
-/* Pin icon on hover for every sidebar subtab */
+/* Sleek Pin Button with Smooth Float Transition, Tilted Icon & Pop Effect */
 .lh-nav-pin-btn {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
   margin-right: 4px;
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--lh-text3);
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 120ms ease, transform 120ms ease, background-color 120ms ease, color 120ms ease;
+  transform: translateX(4px) scale(0.9);
+  transition:
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
   flex-shrink: 0;
+  outline: none;
 }
 
+.lh-nav-pin-btn .lh-nav-pin-icon {
+  transform: rotate(-30deg);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.15s ease, color 0.15s ease;
+}
+
+/* Hover reveal with buttery smoothness */
 .lh-item-row-wrap:hover .lh-nav-pin-btn,
 .lh-facet-link-wrap:hover .lh-nav-pin-btn,
 .lh-nav-pin-btn.pinned {
   opacity: 1;
-  transform: scale(1);
+  transform: translateX(0) scale(1);
 }
 
+/* Hover on pin button itself - soft subtle light background & crisp icon */
 .lh-nav-pin-btn:hover {
-  background: var(--lh-sidebar-hover);
-  color: var(--lh-accent);
+  background: rgba(15, 23, 42, 0.07);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--lh-text);
 }
 
+:root[data-theme="dark"] .lh-nav-pin-btn:hover,
+.dark .lh-nav-pin-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+/* Click / Active press feedback */
+.lh-nav-pin-btn:active {
+  transform: scale(0.82) rotate(-15deg);
+}
+
+/* When pinned - spring bounce animation, filled icon & crisp active style */
 .lh-nav-pin-btn.pinned {
-  color: var(--lh-accent);
+  color: var(--lh-text);
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.08);
+  animation: lh-pin-bounce 0.36s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+:root[data-theme="dark"] .lh-nav-pin-btn.pinned,
+.dark .lh-nav-pin-btn.pinned {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .lh-nav-pin-btn.pinned .lh-nav-pin-icon {
   fill: currentColor;
-  transform: rotate(-32deg);
+  transform: rotate(-45deg) scale(1.08);
 }
 
-.lh-nav-pin-icon {
-  transition: transform 140ms ease;
+@keyframes lh-pin-bounce {
+  0% {
+    transform: scale(0.72) rotate(-20deg);
+  }
+  60% {
+    transform: scale(1.18) rotate(-50deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 /* Faceted Subfilters - 26px Height, 40px Left Indent */
