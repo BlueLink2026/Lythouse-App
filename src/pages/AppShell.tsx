@@ -112,7 +112,7 @@ const CSS = `
   position: relative;
   user-select: none;
   font-size: 13px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: none;
 }
 
@@ -659,8 +659,9 @@ const CSS = `
 
 /* Sidebar Bottom Footer */
 .lh-sl-footer {
+  position: relative;
   border-top: 1px solid var(--lh-border-subtle);
-  padding: 6px 10px 8px;
+  padding: 6px 8px 8px;
   background: var(--lh-surface-sidebar);
   display: flex;
   flex-direction: column;
@@ -764,22 +765,25 @@ const CSS = `
 .lh-popover {
   position: absolute;
   z-index: 110;
-  width: 240px;
+  width: auto;
+  min-width: 220px;
   background: var(--lh-dropdown-bg);
   border: 1px solid var(--lh-border);
   border-radius: 9px;
-  padding: 6px;
+  padding: 5px;
   box-shadow: var(--lh-dropdown-shadow);
 }
 
 .lh-popover.top-ws {
-  top: 48px;
-  left: 10px;
+  top: 46px;
+  left: 8px;
+  right: 8px;
 }
 
 .lh-popover.up-user {
-  bottom: 50px;
-  left: 10px;
+  bottom: 54px;
+  left: 8px;
+  right: 8px;
 }
 
 .lh-pop-sec-title {
