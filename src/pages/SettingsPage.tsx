@@ -3,7 +3,7 @@ import{useEffect,useState}from'react';
 import{supabase,edgeFunctionUrl,anonKey}from'../lib/supabase';
 import{useAuth}from'../lib/auth';
 import{PageHeader,Spinner,toast}from'../lib/ui';
-import{User,Bell,Shield,Globe,Key,Palette,Save,Check,Loader as Loader2,Eye,EyeOff,AlertTriangle,Monitor,Moon,Sun,Camera,Upload,Download,Trash2,SlidersHorizontal,Pin,FolderGit2,Bug,Layers,Server,Sparkles,Building2,X,Compass,Rocket}from'lucide-react';
+import{User,Bell,Shield,Globe,Key,Palette,Save,Check,Loader as Loader2,Eye,EyeOff,AlertTriangle,Monitor,Moon,Sun,Camera,Upload,Download,Trash2,SlidersHorizontal,Pin,FolderGit2,Bug,Layers,Server,Sparkles,Building2,X,Compass,Rocket,Plus}from'lucide-react';
 import{usePins,removePin,togglePin,pinKey,type PinType,type PinItem}from'../lib/pins';
 
 type NotifPref={email_validations:boolean;email_critical:boolean;email_digest:boolean;email_deployments:boolean;};
