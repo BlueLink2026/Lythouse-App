@@ -443,8 +443,8 @@ const CSS = `
 
 /* Capability Accordion Group - 34px Row Height */
 .lh-sl-group {
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .lh-sl-hdr-btn {
@@ -521,7 +521,8 @@ const CSS = `
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 3px;
+  padding: 2px 0 3px;
 }
 
 /* Child Navigation Item Link - 30px Height, 34px Left Indent */
@@ -598,12 +599,12 @@ const CSS = `
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   margin-right: 4px;
-  border: 1px solid transparent;
+  border: 0;
   background: transparent;
-  color: var(--lh-text3);
+  color: var(--lh-text, #0f172a);
   border-radius: 6px;
   cursor: pointer;
   opacity: 0;
@@ -612,7 +613,6 @@ const CSS = `
     opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.15s ease,
-    border-color 0.15s ease,
     color 0.15s ease;
   flex-shrink: 0;
   outline: none;
@@ -620,7 +620,8 @@ const CSS = `
 
 .lh-nav-pin-btn .lh-nav-pin-icon {
   transform: rotate(-30deg);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.15s ease, color 0.15s ease;
+  stroke-width: 2.2;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.15s ease;
 }
 
 /* Hover reveal with buttery smoothness */
@@ -631,17 +632,15 @@ const CSS = `
   transform: translateX(0) scale(1);
 }
 
-/* Hover on pin button itself - soft subtle light background & crisp icon */
+/* Hover on pin button itself - soft subtle very light background & pure crisp dark icon */
 .lh-nav-pin-btn:hover {
-  background: rgba(15, 23, 42, 0.07);
-  border-color: rgba(15, 23, 42, 0.08);
-  color: var(--lh-text);
+  background: rgba(0, 0, 0, 0.045);
+  color: var(--lh-text, #000000);
 }
 
 :root[data-theme="dark"] .lh-nav-pin-btn:hover,
 .dark .lh-nav-pin-btn:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
   color: #ffffff;
 }
 
@@ -652,17 +651,15 @@ const CSS = `
 
 /* When pinned - spring bounce animation, filled icon & crisp active style */
 .lh-nav-pin-btn.pinned {
-  color: var(--lh-text);
-  background: rgba(15, 23, 42, 0.05);
-  border-color: rgba(15, 23, 42, 0.08);
+  color: var(--lh-text, #0f172a);
+  background: rgba(0, 0, 0, 0.035);
   animation: lh-pin-bounce 0.36s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 :root[data-theme="dark"] .lh-nav-pin-btn.pinned,
 .dark .lh-nav-pin-btn.pinned {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .lh-nav-pin-btn.pinned .lh-nav-pin-icon {
@@ -698,7 +695,8 @@ const CSS = `
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
+  padding: 1px 0 2px;
 }
 
 .lh-facet-link-wrap {
@@ -1433,7 +1431,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             title={isItemPinned ? `Unpin ${item.label}` : `Pin ${item.label} to top`}
             aria-label={isItemPinned ? `Unpin ${item.label}` : `Pin ${item.label}`}
           >
-            <Pin size={11} className="lh-nav-pin-icon" />
+            <Pin size={13.5} className="lh-nav-pin-icon" />
           </button>
 
           {hasFacets && (
@@ -1498,7 +1496,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                       title={isFacetPinned ? `Unpin ${facet.label}` : `Pin ${facet.label}`}
                       aria-label={isFacetPinned ? `Unpin ${facet.label}` : `Pin ${facet.label}`}
                     >
-                      <Pin size={10} className="lh-nav-pin-icon" />
+                      <Pin size={12} className="lh-nav-pin-icon" />
                     </button>
                   </div>
                 )
