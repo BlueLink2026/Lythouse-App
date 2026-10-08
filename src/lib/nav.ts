@@ -6,7 +6,6 @@ import {
   Boxes, BookOpen, Settings, Users, Gauge, CreditCard, Compass, Code2
 } from 'lucide-react'
 
-
 export type FacetVariant = 'default' | 'danger' | 'warning' | 'success' | 'info' | 'purple'
 
 export interface NavFacet {
@@ -45,7 +44,77 @@ export const GLOBAL_FACET_QUICK_FILTERS: { id: string; label: string; to: string
   { id: 'validated-repos', label: 'Validated Repos', to: '/projects?status=validated', dotColor: '#10b981' },
 ]
 
-// Core primary navigation items for everyday workflows with Faceted Filtering
+// Reusable individual navigation items with facets
+export const NAV_PROJECTS: NavItem = {
+  label: 'Projects',
+  to: '/projects',
+  icon: FolderGit2,
+  description: 'Connected repositories & services',
+  keywords: ['repositories', 'repos', 'apps', 'services', 'code'],
+  facets: [
+    { id: 'all-projects', label: 'All Projects', to: '/projects' },
+    { id: 'proj-validated', label: 'Validated', to: '/projects?status=validated', badge: 'Active', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'validated' } },
+    { id: 'proj-pending', label: 'Needs Validation', to: '/projects?status=not_validated', badge: 'Pending', badgeVariant: 'warning', dotColor: '#f59e0b', filterParam: { key: 'status', value: 'not_validated' } },
+    { id: 'proj-github', label: 'GitHub Repos', to: '/projects?provider=github', dotColor: '#818cf8', filterParam: { key: 'provider', value: 'github' } },
+    { id: 'proj-gitlab', label: 'GitLab Repos', to: '/projects?provider=gitlab', dotColor: '#f97316', filterParam: { key: 'provider', value: 'gitlab' } },
+  ]
+}
+
+export const NAV_RUNS: NavItem = {
+  label: 'Runs',
+  to: '/runs',
+  icon: ListFilter,
+  description: 'Analysis & validation runs history',
+  keywords: ['jobs', 'executions', 'history', 'builds', 'analysis'],
+  facets: [
+    { id: 'all-runs', label: 'All Runs', to: '/runs' },
+    { id: 'run-failed', label: 'Failed Runs', to: '/runs?status=failed', badge: 'Alert', badgeVariant: 'danger', dotColor: '#ef4444', filterParam: { key: 'status', value: 'failed' } },
+    { id: 'run-running', label: 'In Progress', to: '/runs?status=running', badge: 'Live', badgeVariant: 'info', dotColor: '#38bdf8', filterParam: { key: 'status', value: 'running' } },
+    { id: 'run-completed', label: 'Completed', to: '/runs?status=completed', badge: 'Passed', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'completed' } },
+  ]
+}
+
+export const NAV_PIPELINES: NavItem = {
+  label: 'Pipelines',
+  to: '/pipeline',
+  icon: Workflow,
+  description: 'Release orchestration pipelines',
+  keywords: ['workflows', 'ci', 'cd', 'stages', 'automation'],
+  facets: [
+    { id: 'all-pipelines', label: 'Release Pipeline', to: '/pipeline' },
+    { id: 'pipeline-sim', label: 'Simulator', to: '/simulator', dotColor: '#a855f7' },
+    { id: 'pipeline-env', label: 'Environment Checks', to: '/environment', dotColor: '#06b6d4' },
+  ]
+}
+
+export const NAV_FINDINGS: NavItem = {
+  label: 'Findings',
+  to: '/findings',
+  icon: Bug,
+  description: 'Security, bug & quality issues',
+  keywords: ['bugs', 'vulnerabilities', 'issues', 'risks', 'cve'],
+  facets: [
+    { id: 'all-findings', label: 'All Findings', to: '/findings' },
+    { id: 'finding-crit', label: 'Critical Severity', to: '/findings?sev=critical', badge: 'Critical', badgeVariant: 'danger', dotColor: '#ef4444', filterParam: { key: 'sev', value: 'critical' } },
+    { id: 'finding-high', label: 'High Severity', to: '/findings?sev=high', badge: 'High', badgeVariant: 'warning', dotColor: '#f97316', filterParam: { key: 'sev', value: 'high' } },
+    { id: 'finding-open', label: 'Open Issues', to: '/findings?status=open', dotColor: '#6366f1', filterParam: { key: 'status', value: 'open' } },
+    { id: 'finding-resolved', label: 'Resolved', to: '/findings?status=resolved', badge: 'Fixed', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'resolved' } },
+  ]
+}
+
+export const NAV_CHANGE_MANAGEMENT: NavItem = {
+  label: 'Change Management',
+  to: '/change-management',
+  icon: FileText,
+  description: 'Change requests & risk analysis',
+  keywords: ['cr', 'rfc', 'tickets', 'changes'],
+  facets: [
+    { id: 'all-cr', label: 'All Change Requests', to: '/change-management' },
+    { id: 'cr-approvals', label: 'Pending Approvals', to: '/approvals', badge: 'Review', badgeVariant: 'warning', dotColor: '#eab308' },
+  ]
+}
+
+// Core primary navigation items
 export const NAV_PRIMARY: NavItem[] = [
   {
     label: 'Overview',
@@ -54,45 +123,9 @@ export const NAV_PRIMARY: NavItem[] = [
     description: 'Release readiness & workspace overview',
     keywords: ['home', 'dashboard', 'summary', 'overview']
   },
-  {
-    label: 'Projects',
-    to: '/projects',
-    icon: FolderGit2,
-    description: 'Connected repositories & services',
-    keywords: ['repositories', 'repos', 'apps', 'services'],
-    facets: [
-      { id: 'all-projects', label: 'All Repositories', to: '/projects' },
-      { id: 'proj-validated', label: 'Validated', to: '/projects?status=validated', badge: 'Active', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'validated' } },
-      { id: 'proj-pending', label: 'Needs Validation', to: '/projects?status=not_validated', badge: 'Pending', badgeVariant: 'warning', dotColor: '#f59e0b', filterParam: { key: 'status', value: 'not_validated' } },
-      { id: 'proj-github', label: 'GitHub', to: '/projects?provider=github', dotColor: '#818cf8', filterParam: { key: 'provider', value: 'github' } },
-      { id: 'proj-gitlab', label: 'GitLab', to: '/projects?provider=gitlab', dotColor: '#f97316', filterParam: { key: 'provider', value: 'gitlab' } },
-    ]
-  },
-  {
-    label: 'Runs',
-    to: '/runs',
-    icon: ListFilter,
-    description: 'Analysis & validation runs history',
-    keywords: ['jobs', 'executions', 'history', 'builds', 'analysis'],
-    facets: [
-      { id: 'all-runs', label: 'All Runs', to: '/runs' },
-      { id: 'run-failed', label: 'Failed Runs', to: '/runs?status=failed', badge: 'Alert', badgeVariant: 'danger', dotColor: '#ef4444', filterParam: { key: 'status', value: 'failed' } },
-      { id: 'run-running', label: 'In Progress', to: '/runs?status=running', badge: 'Live', badgeVariant: 'info', dotColor: '#38bdf8', filterParam: { key: 'status', value: 'running' } },
-      { id: 'run-completed', label: 'Completed', to: '/runs?status=completed', badge: 'Passed', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'completed' } },
-    ]
-  },
-  {
-    label: 'Pipelines',
-    to: '/pipeline',
-    icon: Workflow,
-    description: 'Release orchestration pipelines',
-    keywords: ['workflows', 'ci', 'cd', 'stages', 'automation'],
-    facets: [
-      { id: 'all-pipelines', label: 'Release Pipeline', to: '/pipeline' },
-      { id: 'pipeline-sim', label: 'Blast Radius Simulator', to: '/simulator', dotColor: '#a855f7' },
-      { id: 'pipeline-env', label: 'Environment Readiness', to: '/environment', dotColor: '#06b6d4' },
-    ]
-  },
+  NAV_PROJECTS,
+  NAV_RUNS,
+  NAV_PIPELINES,
   {
     label: 'Deployments',
     to: '/deployments',
@@ -100,31 +133,8 @@ export const NAV_PRIMARY: NavItem[] = [
     description: 'Active and past releases',
     keywords: ['release', 'publish', 'rollout', 'targets'],
   },
-  {
-    label: 'Findings',
-    to: '/findings',
-    icon: Bug,
-    description: 'Security, bug & quality issues',
-    keywords: ['bugs', 'vulnerabilities', 'issues', 'risks', 'cve'],
-    facets: [
-      { id: 'all-findings', label: 'All Findings', to: '/findings' },
-      { id: 'finding-crit', label: 'Critical Severity', to: '/findings?sev=critical', badge: 'Critical', badgeVariant: 'danger', dotColor: '#ef4444', filterParam: { key: 'sev', value: 'critical' } },
-      { id: 'finding-high', label: 'High Severity', to: '/findings?sev=high', badge: 'High', badgeVariant: 'warning', dotColor: '#f97316', filterParam: { key: 'sev', value: 'high' } },
-      { id: 'finding-open', label: 'Open Issues', to: '/findings?status=open', dotColor: '#6366f1', filterParam: { key: 'status', value: 'open' } },
-      { id: 'finding-resolved', label: 'Resolved', to: '/findings?status=resolved', badge: 'Fixed', badgeVariant: 'success', dotColor: '#10b981', filterParam: { key: 'status', value: 'resolved' } },
-    ]
-  },
-  {
-    label: 'Change Management',
-    to: '/change-management',
-    icon: FileText,
-    description: 'Change requests & risk analysis',
-    keywords: ['cr', 'rfc', 'tickets', 'changes'],
-    facets: [
-      { id: 'all-cr', label: 'Change Requests', to: '/change-management' },
-      { id: 'cr-approvals', label: 'Pending Approvals', to: '/approvals', badge: 'Review', badgeVariant: 'warning', dotColor: '#eab308' },
-    ]
-  },
+  NAV_FINDINGS,
+  NAV_CHANGE_MANAGEMENT,
   {
     label: 'Approvals',
     to: '/approvals',
@@ -133,7 +143,6 @@ export const NAV_PRIMARY: NavItem[] = [
     keywords: ['gates', 'reviews', 'signoff', 'decisions']
   },
 ]
-
 
 // Secondary / Deep capability items
 export const NAV_MORE: NavItem[] = [
@@ -169,7 +178,6 @@ export const NAV_SEARCH_EXTRA: NavItem[] = [
   { label: 'Chaos Engineering', to: '/chaos', icon: Zap, description: 'Fault injection & resilience simulations', keywords: ['resilience', 'fault', 'failure', 'chaos'] },
 ]
 
-// Spacelift-exact 6 Core Capability Categories
 export interface SpaceliftSection {
   id: string
   title: string
@@ -177,6 +185,7 @@ export interface SpaceliftSection {
   items: NavItem[]
 }
 
+// Spacelift 6 Core Capability Categories with clean, distinct, intuitive items
 export const SPACELIFT_SECTIONS: SpaceliftSection[] = [
   {
     id: 'insights',
@@ -184,8 +193,8 @@ export const SPACELIFT_SECTIONS: SpaceliftSection[] = [
     icon: Compass,
     items: [
       { label: 'Overview', to: '/dashboard', icon: House, description: 'Release readiness & workspace overview' },
-      NAV_PRIMARY[1], // Runs (with facets)
-      NAV_PRIMARY[3], // Findings (with facets)
+      NAV_RUNS,
+      NAV_FINDINGS,
       { label: 'Analytics', to: '/analytics', icon: Activity, description: 'Engineering & release telemetry' },
       { label: 'Executive View', to: '/executive', icon: BarChart3, description: 'Leadership KPI dashboard' },
     ]
@@ -195,7 +204,7 @@ export const SPACELIFT_SECTIONS: SpaceliftSection[] = [
     title: 'Ship Infra',
     icon: Rocket,
     items: [
-      NAV_PRIMARY[2], // Pipelines (with facets)
+      NAV_PIPELINES,
       { label: 'Deployments', to: '/deployments', icon: Rocket, description: 'Active and past releases' },
       { label: 'Simulator', to: '/simulator', icon: Zap, description: 'Blast radius simulation' },
       { label: 'Server Validation', to: '/server-validation', icon: Server, description: 'Server infrastructure checks' },
@@ -207,7 +216,7 @@ export const SPACELIFT_SECTIONS: SpaceliftSection[] = [
     title: 'Share Code & Config',
     icon: Code2,
     items: [
-      NAV_PRIMARY[0], // Projects (with facets)
+      NAV_PROJECTS,
       { label: 'Stacks', to: '/stacks', icon: Layers, description: 'Multi-service dependency stacks' },
     ]
   },
@@ -217,7 +226,7 @@ export const SPACELIFT_SECTIONS: SpaceliftSection[] = [
     icon: ShieldCheck,
     items: [
       { label: 'Policy Studio', to: '/policies', icon: ShieldCheck, description: 'Release guardrails & policies' },
-      NAV_PRIMARY[4], // Change Management (with facets)
+      NAV_CHANGE_MANAGEMENT,
       { label: 'Approvals', to: '/approvals', icon: ClipboardCheck, description: 'Pending gatekeeper reviews' },
       { label: 'Compliance', to: '/compliance', icon: Scale, description: 'Regulatory frameworks & reports' },
       { label: 'Audit Log', to: '/audit', icon: ScrollText, description: 'Immutable audit trails' },
@@ -257,7 +266,6 @@ export const ALL_NAV_ITEMS: NavItem[] = [
   ...NAV_ACCOUNT,
   ...NAV_SEARCH_EXTRA,
 ].filter((item, index, self) => index === self.findIndex((t) => t.to === item.to))
-
 
 // Route -> Human-readable Page Title
 export const PAGE_TITLES: Record<string, string> = {
